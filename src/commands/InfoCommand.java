@@ -8,8 +8,8 @@ import java.util.Stack;
 public class InfoCommand {
 
     public void mainMethod(Stack<Route> collection, Date initDate) {
-        System.out.println("Тип коллекции: " + collection.getClass().getName());
-        System.out.println("Дата инициализации: " + initDate);
-        System.out.println("Количество элементов: " + collection.size());
+        System.out.printf("Тип коллекции: %s%n", collection.getClass().getName());
+        System.out.printf("Дата инициализации: %s%n", initDate);
+        System.out.printf("Количество элементов: %s%n", collection.size());
     }
 }

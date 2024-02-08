@@ -1,6 +1,6 @@
 package routeClasses;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -10,7 +10,7 @@ public class Route implements Comparable<Route> {
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
-    private LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
+    private ZonedDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     private LocationFrom from; //Поле не может быть null
     private LocationTo to; //Поле может быть null
     private Long distance; //Поле не может быть null, Значение поля должно быть больше 1
@@ -35,7 +35,7 @@ public class Route implements Comparable<Route> {
      * @param to           the to
      * @param distance     the distance
      */
-    public Route(String name, LocalDate creationDate, Coordinates coordinates, LocationFrom from, LocationTo to, Long distance) {
+    public Route(String name, ZonedDateTime creationDate, Coordinates coordinates, LocationFrom from, LocationTo to, Long distance) {
         this.name = name;
         this.creationDate = creationDate;
         this.coordinates = coordinates;
@@ -67,7 +67,7 @@ public class Route implements Comparable<Route> {
      *
      * @return the creation date
      */
-    public LocalDate getCreationDate() {
+    public ZonedDateTime getCreationDate() {
         return creationDate;
     }
 
@@ -121,7 +121,7 @@ public class Route implements Comparable<Route> {
      *
      * @param creationDate the creation date
      */
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(ZonedDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
