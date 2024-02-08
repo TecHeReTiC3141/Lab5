@@ -13,7 +13,7 @@ public class Route implements Comparable<Route> {
     private ZonedDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
     private LocationFrom from; //Поле не может быть null
     private LocationTo to; //Поле может быть null
-    private Long distance; //Поле не может быть null, Значение поля должно быть больше 1
+    private double distance; //Поле не может быть null, Значение поля должно быть больше 1
 
     private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -35,7 +35,7 @@ public class Route implements Comparable<Route> {
      * @param to           the to
      * @param distance     the distance
      */
-    public Route(String name, ZonedDateTime creationDate, Coordinates coordinates, LocationFrom from, LocationTo to, Long distance) {
+    public Route(String name, ZonedDateTime creationDate, Coordinates coordinates, LocationFrom from, LocationTo to, double distance) {
         this.name = name;
         this.creationDate = creationDate;
         this.coordinates = coordinates;
@@ -103,7 +103,7 @@ public class Route implements Comparable<Route> {
      *
      * @return the distance
      */
-    public Long getDistance() {
+    public double getDistance() {
         return distance;
     }
 
@@ -157,7 +157,7 @@ public class Route implements Comparable<Route> {
      *
      * @param distance the distance
      */
-    public void setDistance(Long distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 

@@ -1,4 +1,7 @@
+import exceptions.InvalidDistanceException;
+import exceptions.InvalidNameException;
 import exceptions.UnknownCommandException;
+import exceptions.WrongArgumentsException;
 import routeClasses.Route;
 import utils.InputValidator;
 
@@ -8,8 +11,6 @@ import java.util.Stack;
 
 public class Console {
     private final RouteController controller = new RouteController();
-
-    private final InputValidator validator = new InputValidator();
 
     private Date initDate = new Date();
 
@@ -34,37 +35,59 @@ public class Console {
 
         Stack<Route> collection = controller.getRoutes();
         try {
-            validator.checkIsValidCommand(commandParts[0]);
+            InputValidator.checkIsValidCommand(commandParts[0]);
             switch (commandParts[0]) {
                 case "exit":
                     try {
-                        validator.checkIfOneArgument(commandParts);
+                        InputValidator.checkIfNoArguments(commandParts);
                         flag = false;
 
                         System.out.println("Выход из программы. Сохранение коллекции...");
                         break;
-                    } catch (IllegalArgumentException e) {
+                    } catch (WrongArgumentsException e) {
                         System.out.println(e.getMessage());
                         return;
                     }
                 case "help":
                     try {
-                        validator.checkIfOneArgument(commandParts);
+                        InputValidator.checkIfNoArguments(commandParts);
                         controller.helpCommand.mainMethod();
                         break;
-                    } catch (IllegalArgumentException e) {
+                    } catch (WrongArgumentsException e) {
                         System.out.println(e.getMessage());
                         return;
                     }
                 case "info":
                     try {
-                        validator.checkIfOneArgument(commandParts);
+                        InputValidator.checkIfNoArguments(commandParts);
                         controller.infoCommand.mainMethod(collection, initDate);
                         break;
-                    } catch (IllegalArgumentException e) {
+                    } catch (WrongArgumentsException e) {
                         System.out.println(e.getMessage());
                         return;
                     }
+                case "show":
+                    try {
+                        InputValidator.checkIfNoArguments(commandParts);
+                        controller.showCommand.mainMethod(collection);
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.out.println(e.getMessage());
+                        return;
+                    }
+                case "add":
+                    try {
+                        InputValidator.checkIfOneArgument(commandParts);
+                        controller.addCommand.mainMethod(collection, commandParts[1]);
+                        break;
+                    } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException e) {
+                        System.out.println(e.getMessage());
+                        return;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.out.println("Должно быть ровно 2 начальных параметра (name и distance)");
+                        return;
+                    }
+
             }
         } catch (UnknownCommandException e) {
             System.out.println(e.getMessage());
