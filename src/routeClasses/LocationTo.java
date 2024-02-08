@@ -6,10 +6,10 @@ package routeClasses;
  */
 public class LocationTo {
 
-    private Integer x; //Поле не может быть null
-    private Float y; //Поле не может быть null
-    private float z;
-    private String name; //Длина строки не должна быть больше 875, Поле не может быть null
+    private float x;
+    private Float y;//Поле не может быть null
+    private double z;
+    private String name; // Поле не может быть null
 
     /**
      * Instantiates a new Location to.
@@ -24,7 +24,7 @@ public class LocationTo {
      * @param z    the z
      * @param name the name
      */
-    public LocationTo(Integer x, Float y, float z, String name) {
+    public LocationTo(float x, Float y, float z, String name) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -36,7 +36,7 @@ public class LocationTo {
      *
      * @return the x
      */
-    public Integer getX() {
+    public float getX() {
         return x;
     }
 
@@ -45,7 +45,7 @@ public class LocationTo {
      *
      * @param x the x
      */
-    public void setX(Integer x) {
+    public void setX(float x) {
         this.x = x;
     }
 
@@ -72,7 +72,7 @@ public class LocationTo {
      *
      * @return the z
      */
-    public float getZ() {
+    public double getZ() {
         return z;
     }
 
@@ -81,7 +81,7 @@ public class LocationTo {
      *
      * @param z the z
      */
-    public void setZ(float z) {
+    public void setZ(double z) {
         this.z = z;
     }
 

@@ -182,11 +182,11 @@ public class Route implements Comparable<Route> {
      * @return the string
      */
     public String showValues() {
-        return "id=%s,name=%s,coordinatesX=%s,coordinatesY=%s,creationDate=%s,fromX=%s,fromY=%s,fromName=%s,distance=%s".formatted(
+        return "id=%s,name=%s,coordinatesX=%s,coordinatesY=%s,creationDate=%s,toX=%s,toY=%s,toZ=%s,toName=%s,distance=%s".formatted(
                 this.getId(), this.getName(), this.getCoordinates().getX(), this.getCoordinates().getY(),
-                this.getCreationDate().format(dateFormat), this.getFrom().getX(), this.getFrom().getY(), this.getFrom().getName(), this.getDistance())
-                + (this.getTo() == null ? "" : ",toX=%s,toY=%s,toZ=%s,toName=%s".formatted(this.getTo().getX(),
-                this.getTo().getY(), this.getTo().getZ(), this.getTo().getName()));
+                this.getCreationDate().format(dateFormat), this.getTo().getX(), this.getTo().getY(), this.getTo().getZ(), this.getTo().getName(), this.getDistance())
+                + (this.getFrom() == null ? "" : ",fromX=%s,fromY=%s,fromZ=%s".formatted(this.getFrom().getX(),
+                this.getFrom().getY(), this.getFrom().getZ()));
     }
 
     public String toString() {
@@ -194,7 +194,7 @@ public class Route implements Comparable<Route> {
     }
 
     /**
-     * Get serialized string string.
+     * Get serialized string.
      *
      * @return the string
      */

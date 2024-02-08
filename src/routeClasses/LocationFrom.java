@@ -5,9 +5,9 @@ package routeClasses;
  */
 public class LocationFrom {
 
-    private Float x; //Поле не может быть null
+    private Integer x; //Поле не может быть null
     private Long y; //Поле не может быть null
-    private String name; //Поле может быть null
+    private Double z; //Поле может быть null
 
     /**
      * Instantiates a new Location from.
@@ -21,10 +21,10 @@ public class LocationFrom {
      * @param y    the y
      * @param name the name
      */
-    public LocationFrom(Float x, Long y, String name) {
+    public LocationFrom(Integer x, Long y, Double z) {
         this.x = x;
         this.y = y;
-        this.name = name;
+        this.z = z;
     }
 
     /**
@@ -32,7 +32,7 @@ public class LocationFrom {
      *
      * @return the x
      */
-    public Float getX() {
+    public Integer getX() {
         return x;
     }
 
@@ -46,12 +46,12 @@ public class LocationFrom {
     }
 
     /**
-     * Gets name.
+     * Gets z.
      *
-     * @return the name
+     * @return the z
      */
-    public String getName() {
-        return name;
+    public Double getZ() {
+        return z;
     }
 
     /**
@@ -59,7 +59,7 @@ public class LocationFrom {
      *
      * @param x the x
      */
-    public void setX(Float x) {
+    public void setX(Integer x) {
         this.x = x;
     }
 
@@ -73,12 +73,12 @@ public class LocationFrom {
     }
 
     /**
-     * Sets name.
+     * Sets z.
      *
-     * @param name the name
+     * @param z the z coordinate
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setZ(Double z) {
+        this.z = z;
     }
 
 }

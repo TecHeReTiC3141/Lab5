@@ -6,7 +6,7 @@ package routeClasses;
 public class Coordinates {
 
     private long x;
-    private double y;
+    private long y;
 
     /**
      * Instantiates a new Coordinates.
@@ -20,7 +20,7 @@ public class Coordinates {
      * @param x the x
      * @param y the y
      */
-    public Coordinates(long x, double y) {
+    public Coordinates(long x, long y) {
         this.x = x;
         this.y = y;
     }
@@ -39,7 +39,7 @@ public class Coordinates {
      *
      * @return the y
      */
-    public double getY() {
+    public long getY() {
         return y;
     }
 
@@ -57,7 +57,7 @@ public class Coordinates {
      *
      * @param y the y
      */
-    public void setY(double y) {
+    public void setY(long y) {
         this.y = y;
     }
 }

@@ -57,10 +57,16 @@ public class InputValidator {
     }
 
     public static double checkDistance(String distance) throws InvalidDistanceException {
-=        double d = Double.parseDouble(distance);
+        double d = Double.parseDouble(distance);
         if (d <= 0d) {
             throw new InvalidDistanceException();
         }
         return d;
+    }
+
+    public static void checkIfYesOrNo(String answer) {
+        if (!answer.equals("yes") && !answer.equals("no")) {
+            throw new IllegalArgumentException("Введите yes или no");
+        }
     }
 }
