@@ -41,7 +41,9 @@ public class Console {
                     try {
                         controller.addCommand.mainMethod(collection, line, true);
                     } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
-                        System.err.println("Ошибка в строке " + lineCounter + ": " + e.getMessage());
+                        System.err.printf("Ошибка в записи %s: %s%n", lineCounter, e.getMessage());
+                    } catch (NumberFormatException e) {
+                        System.err.printf("Ошибка в записи %s: неверный формат числа%n", lineCounter);
                     }
                     line = "";
                 } else {
@@ -119,6 +121,7 @@ public class Console {
                     try {
                         InputValidator.checkIfOneArgument(commandParts);
                         controller.removeByIdCommand.mainMethod(collection, Integer.parseInt(commandParts[1]));
+                        break;
                     } catch (WrongArgumentsException e) {
                         System.err.println(e.getMessage());
                         return;

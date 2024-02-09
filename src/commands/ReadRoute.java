@@ -9,7 +9,12 @@ import routeClasses.LocationTo;
 import routeClasses.Route;
 import utils.InputValidator;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -187,7 +192,84 @@ public abstract class ReadRoute {
         return route;
     }
 
-    public Route parseRoute(String line) {
-        return new Route();
+    public Route parseRoute(String line) throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
+        String[] pairs = line.trim().replace('{', ' ').replace('}', ' ')
+                .replace("\"", "").replace("'", "").split(",");
+        Route route = new Route();
+        LocationTo locationTo = new LocationTo();
+        LocationFrom locationFrom = new LocationFrom();
+        Coordinates coordinates = new Coordinates();
+        ArrayList<String> requiredParams = new ArrayList<>(
+                List.of("name, distance, coordinatesX, coordinatesY, creationDate, toX, toY, toZ".split(", "))
+        );
+        int addFrom = 0;
+
+        DateTimeFormatter formatter = route.getDateFormat();
+
+        for (String pair : pairs) {
+            String[] keyValue = pair.split("=");
+
+            if (keyValue.length != 2) {
+                throw new WrongArgumentsException("Неверное количество параметров, проверьте, что у всех переданных параметров непустое значение");
+            }
+            String key = keyValue[0].trim(), value = keyValue[1].trim();
+            switch (key) {
+                case "id":
+                    route.setId(Long.parseLong(value));
+                    break;
+                case "name":
+                    InputValidator.checkName(value);
+                    route.setName(value);
+                    break;
+                case "distance":
+                    route.setDistance(InputValidator.checkDistance(value));
+                    break;
+                case "coordinatesX":
+                    coordinates.setX(Long.parseLong(value));
+                    break;
+                case "coordinatesY":
+                    coordinates.setY(Long.parseLong(value));
+                    break;
+                case "creationDate":
+                    route.setCreationDate(ZonedDateTime.of(LocalDateTime.parse(value, formatter), ZoneId.of("UTC+3")));
+                    break;
+                case "toX":
+                    locationTo.setX(Float.parseFloat(value));
+                    break;
+                case "toY":
+                    locationTo.setY(Float.parseFloat(value));
+                    break;
+                case "toZ":
+                    locationTo.setZ(Double.parseDouble(value));
+                    break;
+                case "toName":
+                    locationTo.setName(value);
+                    break;
+                case "fromX":
+                    locationFrom.setX(Integer.parseInt(value));
+                    ++addFrom;
+                    break;
+                case "fromY":
+                    locationFrom.setY(Long.parseLong(value));
+                    ++addFrom;
+                    break;
+                case "fromZ":
+                    locationFrom.setZ(Double.parseDouble(value));
+                    ++addFrom;
+                    break;
+                default:
+                    throw new WrongArgumentsException("Неверный начальный параметр: " + keyValue[0]);
+            }
+            requiredParams.remove(key);
+        }
+        if (!requiredParams.isEmpty()) {
+            throw new WrongArgumentsException("Не хватает обязательных параметров: " + requiredParams);
+        }
+        route.setCoordinates(coordinates);
+        route.setTo(locationTo);
+        if (addFrom == 3) {
+            route.setFrom(locationFrom);
+        }
+        return route;
     }
 }
