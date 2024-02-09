@@ -39,7 +39,7 @@ public class Console {
                 if (c == '\n') {
                     lineCounter++;
                     try {
-                        controller.addCommand.mainMethod(collection, line, true);
+                        controller.addCommand.mainMethod(collection, line, true, true);
                     } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
                         System.err.printf("Ошибка в записи %s: %s%n", lineCounter, e.getMessage());
                     } catch (NumberFormatException e) {
@@ -62,11 +62,15 @@ public class Console {
         Scanner scanner = new Scanner(System.in);
         while (flag) {
             String line = scanner.nextLine();
-            processCommand(line);
+            processCommand(line, 1);
         }
     }
 
-    public void processCommand(String line) {
+    public void processCommand(String line, int depth) {
+        if (depth > 1000) {
+            System.out.println("Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя");
+            return;
+        }
 
         String[] commandParts = line.trim().split(" ");
 
@@ -108,7 +112,7 @@ public class Console {
                 case "add":
                     try {
                         InputValidator.checkIfOneArgument(commandParts);
-                        controller.addCommand.mainMethod(collection, commandParts[1]);
+                        controller.addCommand.mainMethod(collection, commandParts[1], depth > 1, false);
                         break;
                     } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException e) {
                         System.err.println(e.getMessage());
@@ -147,12 +151,29 @@ public class Console {
                         System.err.println(e.getMessage());
                         return;
                     }
+                case "execute_script":
+                    try {
+                        InputValidator.checkIfOneArgument(commandParts);
+                        String filename = commandParts[1];
+                        try (FileReader reader = new FileReader(filename)) {
+                            Scanner scanner = new Scanner(reader);
+                            while (scanner.hasNextLine()) {
+                                processCommand(scanner.nextLine(), depth + 1);
+                            }
+                        }  catch (IOException e) {
+                            System.err.println("Ошибка при чтении файла: " + e.getMessage());
+                        }
+
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    }
                 case "exit":
                     try {
                         InputValidator.checkIfNoArguments(commandParts);
                         flag = false;
-
-                        System.out.println("Выход из программы. Сохранение коллекции...");
+                        System.out.println("Выход из программы...");
                         break;
                     } catch (WrongArgumentsException e) {
                         System.err.println(e.getMessage());

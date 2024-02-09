@@ -15,7 +15,7 @@ public class Route implements Comparable<Route> {
     private LocationTo to; //Поле может быть null
     private double distance; //Поле не может быть null, Значение поля должно быть больше 1
 
-    private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss");
 
 
     /**
