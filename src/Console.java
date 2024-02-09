@@ -179,6 +179,29 @@ public class Console {
                         System.err.println(e.getMessage());
                         return;
                     }
+                case "remove_at":
+                    try {
+                        InputValidator.checkIfOneArgument(commandParts);
+                        controller.removeAtCommand.mainMethod(collection, Integer.parseInt(commandParts[1]));
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    } catch (NumberFormatException e) {
+                        System.err.println("index должен быть целым числом");
+                        return;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.err.println("Элемента с таким индексом не существует. Проверьте, что это число больше 0 и меньше размера коллекции");
+                    }
+                case "reorder":
+                    try {
+                        InputValidator.checkIfNoArguments(commandParts);
+                        controller.reorderCommand.mainMethod(collection);
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    }
 
             }
         } catch (UnknownCommandException e) {
