@@ -186,4 +186,8 @@ public abstract class ReadRoute {
 
         return route;
     }
+
+    public Route parseRoute(String line) {
+        return new Route();
+    }
 }

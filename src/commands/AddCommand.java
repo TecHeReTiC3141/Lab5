@@ -9,9 +9,7 @@ import java.util.Stack;
 
 public class AddCommand extends ReadRoute {
 
-    public void mainMethod(Stack<Route> collection, String value)
-            throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
-        Route route = readRoute(value);
+    public void putToCollection(Stack<Route> collection, Route route, boolean silence) {
         if (collection.isEmpty()) {
             route.setId(1);
         } else {
@@ -23,6 +21,18 @@ public class AddCommand extends ReadRoute {
         }
 
         collection.push(route);
-        System.out.println("Маршрут успешно добавлен в коллекцию");
+        if (!silence) System.out.println("Маршрут успешно добавлен в коллекцию");
+    }
+
+    public void mainMethod(Stack<Route> collection, String value)
+            throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
+        Route route = readRoute(value);
+        putToCollection(collection, route, false);
+    }
+
+    public void mainMethod(Stack<Route> collection, String value, boolean parse)
+            throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
+        Route route = parse ? parseRoute(value) : readRoute(value);
+        putToCollection(collection, route, parse);
     }
 }

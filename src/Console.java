@@ -5,6 +5,8 @@ import exceptions.WrongArgumentsException;
 import routeClasses.Route;
 import utils.InputValidator;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.Stack;
@@ -18,7 +20,7 @@ public class Console {
 
     private boolean flag = true;
 
-    public void run() {
+    public void loadInitialCollection() {
         if (dataFile == null) {
             System.err.println("Не найдена переменная окружения DATA_FILE");
             System.exit(1);
@@ -28,6 +30,32 @@ public class Console {
             System.err.println("Файл должен иметь расширение .xml");
             System.exit(1);
         }
+        int lineCounter = 0;
+        try (FileReader reader = new FileReader(dataFile)) {
+            Stack<Route> collection = controller.getRoutes();
+            String line = "";
+            while (reader.ready()) {
+                char c = (char) reader.read();
+                if (c == '\n') {
+                    lineCounter++;
+                    try {
+                        controller.addCommand.mainMethod(collection, line, true);
+                    } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
+                        System.err.println("Ошибка в строке " + lineCounter + ": " + e.getMessage());
+                    }
+                    line = "";
+                } else {
+                    line += c;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Ошибка при чтении файла: " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public void run() {
+        loadInitialCollection();
         System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
         Scanner scanner = new Scanner(System.in);
         while (flag) {
