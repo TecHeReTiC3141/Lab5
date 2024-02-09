@@ -160,7 +160,7 @@ public class Console {
                             while (scanner.hasNextLine()) {
                                 processCommand(scanner.nextLine(), depth + 1);
                             }
-                        }  catch (IOException e) {
+                        } catch (IOException e) {
                             System.err.println("Ошибка при чтении файла: " + e.getMessage());
                         }
 
@@ -197,6 +197,44 @@ public class Console {
                     try {
                         InputValidator.checkIfNoArguments(commandParts);
                         controller.reorderCommand.mainMethod(collection);
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    }
+                case "sort":
+                    try {
+                        InputValidator.checkIfNoArguments(commandParts);
+                        controller.sortCommand.mainMethod(collection);
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    }
+                case "count_greater_than_distance":
+                    try {
+                        InputValidator.checkIfOneArgument(commandParts);
+                        controller.countGreaterThanDistanceCommand.mainMethod(collection, Double.parseDouble(commandParts[1]));
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    } catch (NumberFormatException e) {
+                        System.err.println("distance должен быть положительным вещественным числом");
+                        return;
+                    }
+                case "print_ascending":
+                    try {
+                        InputValidator.checkIfNoArguments(commandParts);
+                        controller.printAscendingCommand.mainMethod(collection);
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    }
+                case "print_field_descending_distance":
+                    try {
+                        InputValidator.checkIfNoArguments(commandParts);
+                        controller.printDescendingDistanceCommand.mainMethod(collection);
                         break;
                     } catch (WrongArgumentsException e) {
                         System.err.println(e.getMessage());

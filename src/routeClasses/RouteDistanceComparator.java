@@ -9,6 +9,6 @@ public class RouteDistanceComparator implements Comparator<Route> {
 
     @Override
     public int compare(Route r1, Route r2) {
-        return (int) (r1.getDistance() - r2.getDistance());
+        return (int) (r2.getDistance() - r1.getDistance());
     }
 }

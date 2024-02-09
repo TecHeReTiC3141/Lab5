@@ -18,7 +18,7 @@ public class RouteController {
     final SortCommand sortCommand = new SortCommand();
     final CountGreaterThanDistanceCommand countGreaterThanDistanceCommand = new CountGreaterThanDistanceCommand();
     final PrintAscendingCommand printAscendingCommand = new PrintAscendingCommand();
-    final PrintFieldDescendingDistanceCommand printDescendingCommand = new PrintFieldDescendingDistanceCommand();
+    final PrintFieldDescendingDistanceCommand printDescendingDistanceCommand = new PrintFieldDescendingDistanceCommand();
 
 
     private Stack<Route> routes = new Stack<>();

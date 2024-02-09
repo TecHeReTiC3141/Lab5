@@ -10,14 +10,17 @@ import java.util.Stack;
 public class AddCommand extends ReadRoute {
 
     public void putToCollection(Stack<Route> collection, Route route, boolean silence) {
-        if (collection.isEmpty()) {
-            route.setId(1);
-        } else {
-            long maxId = 0L;
-            for (Route item : collection) {
-                maxId = Math.max(maxId, item.getId());
+        if (route.getId() == 0) {
+
+            if (collection.isEmpty()) {
+                route.setId(1);
+            } else {
+                long maxId = 0L;
+                for (Route item : collection) {
+                    maxId = Math.max(maxId, item.getId());
+                }
+                route.setId(maxId + 1);
             }
-            route.setId(maxId + 1);
         }
 
         collection.push(route);
