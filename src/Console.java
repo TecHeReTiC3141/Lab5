@@ -14,9 +14,20 @@ public class Console {
 
     private Date initDate = new Date();
 
+    private final String dataFile = System.getenv("DATA_FILE");
+
     private boolean flag = true;
 
     public void run() {
+        if (dataFile == null) {
+            System.err.println("Не найдена переменная окружения DATA_FILE");
+            System.exit(1);
+        }
+        int lastDotIndex = dataFile.lastIndexOf('.');
+        if (lastDotIndex == -1 || !dataFile.substring(lastDotIndex + 1).equals("xml")) {
+            System.err.println("Файл должен иметь расширение .xml");
+            System.exit(1);
+        }
         System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
         Scanner scanner = new Scanner(System.in);
         while (flag) {
@@ -37,24 +48,13 @@ public class Console {
         try {
             InputValidator.checkIsValidCommand(commandParts[0]);
             switch (commandParts[0]) {
-                case "exit":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        flag = false;
-
-                        System.out.println("Выход из программы. Сохранение коллекции...");
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.out.println(e.getMessage());
-                        return;
-                    }
                 case "help":
                     try {
                         InputValidator.checkIfNoArguments(commandParts);
                         controller.helpCommand.mainMethod();
                         break;
                     } catch (WrongArgumentsException e) {
-                        System.out.println(e.getMessage());
+                        System.err.println(e.getMessage());
                         return;
                     }
                 case "info":
@@ -63,7 +63,7 @@ public class Console {
                         controller.infoCommand.mainMethod(collection, initDate);
                         break;
                     } catch (WrongArgumentsException e) {
-                        System.out.println(e.getMessage());
+                        System.err.println(e.getMessage());
                         return;
                     }
                 case "show":
@@ -72,7 +72,7 @@ public class Console {
                         controller.showCommand.mainMethod(collection);
                         break;
                     } catch (WrongArgumentsException e) {
-                        System.out.println(e.getMessage());
+                        System.err.println(e.getMessage());
                         return;
                     }
                 case "add":
@@ -81,16 +81,56 @@ public class Console {
                         controller.addCommand.mainMethod(collection, commandParts[1]);
                         break;
                     } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException e) {
-                        System.out.println(e.getMessage());
+                        System.err.println(e.getMessage());
                         return;
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        System.out.println("Должно быть ровно 2 начальных параметра (name и distance)");
+                        System.err.println("Должно быть ровно 2 начальных параметра (name и distance)");
+                        return;
+                    }
+                case "remove_by_id":
+                    try {
+                        InputValidator.checkIfOneArgument(commandParts);
+                        controller.removeByIdCommand.mainMethod(collection, Integer.parseInt(commandParts[1]));
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    } catch (NumberFormatException e) {
+                        System.err.println("ID должен быть целым числом");
+                        return;
+                    }
+                case "clear":
+                    try {
+                        InputValidator.checkIfNoArguments(commandParts);
+                        controller.clearCommand.mainMethod(collection);
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    }
+                case "save":
+                    try {
+                        InputValidator.checkIfNoArguments(commandParts);
+                        controller.saveCommand.mainMethod(dataFile, collection);
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    }
+                case "exit":
+                    try {
+                        InputValidator.checkIfNoArguments(commandParts);
+                        flag = false;
+
+                        System.out.println("Выход из программы. Сохранение коллекции...");
+                        break;
+                    } catch (WrongArgumentsException e) {
+                        System.err.println(e.getMessage());
                         return;
                     }
 
             }
         } catch (UnknownCommandException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
 
     }
