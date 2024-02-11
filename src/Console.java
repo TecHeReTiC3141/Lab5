@@ -19,15 +19,32 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.Stack;
 
+/**
+ * Класс, отвечающий за работу консоли, предоставляющей пользователю доступ к коллекции посредством команд
+ */
+
 public class Console {
+    /**
+     * Контроллер, содержащий все команду и коллекцию.
+     */
     private final RouteController controller = new RouteController();
-
+    /**
+     * Дата инициализации приложения и коллекции
+     */
     private Date initDate = new Date();
-
+    /**
+     * Путь к файлу, в котором хранится коллекция и куда она сохраняется
+     */
     private final String dataFile = System.getenv("DATA_FILE");
 
+    /**
+     * Флаг, указывающий, продолжает ли работать приложение
+     */
     private boolean flag = true;
 
+    /**
+     * Метод, загружающий начальную коллекцию из файла в переменной окружения DATA_FILE
+     */
     public void loadInitialCollection() {
         if (dataFile == null) {
             System.err.println("Не найдена переменная окружения DATA_FILE");
@@ -61,6 +78,12 @@ public class Console {
         }
     }
 
+    /**
+     * Метод, запускающий цикл работы консольного приложения из следующих шагов:
+     * 1. Загрузка начальной коллекции
+     * 2. Вывод приветствия и предложение ввести help
+     * 3. Чтение и обработка команды из консоли
+     */
     public void run() {
         loadInitialCollection();
         System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
@@ -70,6 +93,12 @@ public class Console {
             processCommand(line, 1);
         }
     }
+
+    /**
+     * Метод, обрабатывающий команду, введенную пользователем
+     * @param line строка, содержащая команду
+     * @param depth глубина рекурсии, используется для предотвращения бесконечной рекурсии при вызове execute_script
+     */
 
     public void processCommand(String line, int depth) {
         if (depth > 1000) {
@@ -124,6 +153,18 @@ public class Console {
                         return;
                     } catch (ArrayIndexOutOfBoundsException e) {
                         System.err.println("Должно быть ровно 2 начальных параметра (name и distance)");
+                        return;
+                    }
+                    case "update":
+                    try {
+                        InputValidator.checkIfTwoArguments(commandParts);
+                        controller.updateByIdCommand.mainMethod(collection, Long.parseLong(commandParts[1]), commandParts[2], depth > 1);
+                        break;
+                    } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException e) {
+                        System.err.println(e.getMessage());
+                        return;
+                    } catch (NumberFormatException e) {
+                        System.err.println("ID должен быть целым числом");
                         return;
                     }
                 case "remove_by_id":

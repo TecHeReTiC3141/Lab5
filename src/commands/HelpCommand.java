@@ -1,7 +1,13 @@
 package commands;
 
+/**
+ * Класс, реализующий команду help, которая выводит справку по доступным командам.
+ */
 public class HelpCommand {
 
+    /**
+     * Main method.
+     */
     public void mainMethod() {
         System.out.println("Список доступных команд:");
         System.out.println("help : вывести справку по доступным командам");

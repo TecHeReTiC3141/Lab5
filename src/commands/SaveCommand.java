@@ -30,7 +30,6 @@ public class SaveCommand {
         }
 
         try {
-            // Remove unwanted whitespaces
             node.normalize();
             XPath xpath = XPathFactory.newInstance().newXPath();
             XPathExpression expr = xpath.compile("//text()[normalize-space()='']");
@@ -41,7 +40,6 @@ public class SaveCommand {
                 nd.getParentNode().removeChild(nd);
             }
 
-            // Create and setup transformer
             Transformer transformer =  TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
@@ -54,7 +52,6 @@ public class SaveCommand {
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             }
 
-            // Turn the node into a string
             StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(node), new StreamResult(writer));
             return writer.toString();

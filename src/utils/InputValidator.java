@@ -50,6 +50,12 @@ public class InputValidator {
         }
     }
 
+    public static void checkIfTwoArguments(String[] commandParts) throws WrongArgumentsException {
+        if (commandParts.length != 3) {
+            throw new WrongArgumentsException("Команда %s принимает ровно 2 аргумента".formatted(commandParts[0]));
+        }
+    }
+
     public static String checkName(String name) throws InvalidNameException {
         if (name == null || name.isEmpty()) {
             throw new InvalidNameException();
