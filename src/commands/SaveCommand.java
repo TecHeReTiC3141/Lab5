@@ -22,7 +22,20 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Stack;
 
+/**
+ * Класс, реализующий команду save, которая сохраняет коллекцию в файл.
+ */
+
 public class SaveCommand {
+
+    /**
+     * Метод, преобразующий объект типа Node в строку.
+     *
+     * @param node               объект типа Node
+     * @param omitXmlDeclaration true, если необходимо убрать xml-заголовок
+     * @param prettyPrint        true, если необходимо красиво оформить xml
+     * @return строковое представление объекта типа Node
+     */
 
     public static String nodeToString(Node node, boolean omitXmlDeclaration, boolean prettyPrint) {
         if (node == null) {
@@ -60,6 +73,13 @@ public class SaveCommand {
         }
     }
 
+    /**
+     * Метод, сохраняющий коллекцию в файл.
+     *
+     * @param filename   имя файла, в который будет сохранена коллекция
+     * @param collection коллекция, которая будет сохранена
+     * @throws ParserConfigurationException исключение, возникающее при работе с xml
+     */
     public void mainMethod(String filename, Stack<Route> collection) throws ParserConfigurationException {
 
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
