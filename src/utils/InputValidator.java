@@ -50,10 +50,11 @@ public class InputValidator {
         }
     }
 
-    public static void checkName(String name) throws InvalidNameException {
+    public static String checkName(String name) throws InvalidNameException {
         if (name == null || name.isEmpty()) {
             throw new InvalidNameException();
         }
+        return name;
     }
 
     public static double checkDistance(String distance) throws InvalidDistanceException {

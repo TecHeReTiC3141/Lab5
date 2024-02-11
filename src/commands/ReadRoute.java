@@ -3,6 +3,9 @@ package commands;
 import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import routeClasses.Coordinates;
 import routeClasses.LocationFrom;
 import routeClasses.LocationTo;
@@ -16,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 
 /**
  * Абстрактный класс, предоставляющий метод для чтения маршрута из строки.
@@ -41,8 +45,7 @@ public abstract class ReadRoute {
 
             switch (keyValue[0]) {
                 case "name":
-                    InputValidator.checkName(keyValue[1]);
-                    route.setName(keyValue[1]);
+                    route.setName(InputValidator.checkName(keyValue[1]));
                     break;
                 case "distance":
                     route.setDistance(InputValidator.checkDistance(keyValue[1]));
@@ -258,7 +261,7 @@ public abstract class ReadRoute {
                     ++addFrom;
                     break;
                 default:
-                    throw new WrongArgumentsException("Неверный начальный параметр: " + keyValue[0]);
+                    throw new WrongArgumentsException("Лишнее поле: " + keyValue[0]);
             }
             requiredParams.remove(key);
         }
@@ -269,6 +272,81 @@ public abstract class ReadRoute {
         route.setTo(locationTo);
         if (addFrom == 3) {
             route.setFrom(locationFrom);
+        }
+        return route;
+    }
+
+    public Route readFromXML(Node routeNode) throws InvalidNameException, WrongArgumentsException, InvalidDistanceException {
+        ArrayList<String> requiredParams = new ArrayList<>(
+                List.of("name, distance, coordinates, creationDate, locationTo".split(", "))
+        );
+
+        Route route = new Route();
+        DateTimeFormatter formatter = route.getDateFormat();
+
+        NodeList children = routeNode.getChildNodes();
+        for (int i = 0; i < children.getLength(); ++i) {
+            Node child = children.item(i);
+            NamedNodeMap attributes = child.getAttributes();
+            Node xNode, yNode, zNode;
+            switch (child.getNodeName()) {
+                case "#text":
+                    break;
+                case "id":
+                    route.setId(Long.parseLong(attributes.getNamedItem("value").getNodeValue()));
+                    break;
+                case "name":
+                    route.setName(InputValidator.checkName(attributes.getNamedItem("value").getNodeValue()));
+                    break;
+                case "coordinates":
+                    route.setCoordinates(new Coordinates(
+                            Long.parseLong(attributes.getNamedItem("x").getNodeValue()),
+                            Long.parseLong(attributes.getNamedItem("y").getNodeValue())
+                    ));
+                    break;
+                case "creationDate":
+                    route.setCreationDate(ZonedDateTime.of(LocalDateTime.parse(
+                            attributes.getNamedItem("value").getNodeValue(),
+                            formatter), ZoneId.of("UTC+3")));
+                    break;
+                case "locationFrom":
+                    xNode = attributes.getNamedItem("x");
+                    yNode = attributes.getNamedItem("y");
+                    zNode = attributes.getNamedItem("z");
+                    if (xNode == null || yNode == null || zNode == null) {
+                        break;
+                    }
+                    route.setFrom(new LocationFrom(
+                            Integer.parseInt(xNode.getNodeValue()),
+                            Long.parseLong(yNode.getNodeValue()),
+                            Double.parseDouble(zNode.getNodeValue())));
+                    break;
+                case "locationTo":
+                    xNode = attributes.getNamedItem("x");
+                    yNode = attributes.getNamedItem("y");
+                    zNode = attributes.getNamedItem("z");
+                    Node nameNode = attributes.getNamedItem("name");
+                    if (xNode == null || yNode == null || zNode == null || nameNode == null) {
+                        throw new WrongArgumentsException("В поле locationTo не хватает обязательных атрибутов");
+                    }
+                    route.setTo(new LocationTo(
+                            Float.parseFloat(xNode.getNodeValue()),
+                            Float.parseFloat(yNode.getNodeValue()),
+                            Float.parseFloat(zNode.getNodeValue()),
+                            nameNode.getNodeValue()));
+                    break;
+                case "distance":
+                    route.setDistance(InputValidator.checkDistance(attributes.getNamedItem("value").getNodeValue()));
+                    break;
+                default:
+                    throw new WrongArgumentsException("Лишнее поле: " + child.getNodeName());
+
+            }
+            requiredParams.remove(child.getNodeName());
+            System.out.println(child.getNodeName() + " " +  child.getNodeValue());
+        }
+        if (!requiredParams.isEmpty()) {
+            throw new WrongArgumentsException("Не хватает обязательных параметров: " + requiredParams);
         }
         return route;
     }

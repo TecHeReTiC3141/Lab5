@@ -2,9 +2,17 @@ import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.UnknownCommandException;
 import exceptions.WrongArgumentsException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import routeClasses.Route;
 import utils.InputValidator;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
@@ -30,29 +38,45 @@ public class Console {
             System.err.println("Файл должен иметь расширение .xml");
             System.exit(1);
         }
-        int lineCounter = 0;
-        try (FileReader reader = new FileReader(dataFile)) {
+        int lineCount = 0;
+        try {
+
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse(new File(dataFile));
+
             Stack<Route> collection = controller.getRoutes();
-            String line = "";
-            while (reader.ready()) {
-                char c = (char) reader.read();
-                if (c == '\n') {
-                    lineCounter++;
-                    try {
-                        controller.addCommand.mainMethod(collection, line, true, true);
-                    } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
-                        System.err.printf("Ошибка в записи %s: %s%n", lineCounter, e.getMessage());
-                    } catch (NumberFormatException e) {
-                        System.err.printf("Ошибка в записи %s: неверный формат числа%n", lineCounter);
-                    }
-                    line = "";
-                } else {
-                    line += c;
-                }
+
+            NodeList routeElements = doc.getDocumentElement().getElementsByTagName("Route");
+            for (int i = 0; i < routeElements.getLength(); ++i) {
+                ++lineCount;
+                Node route = routeElements.item(i);
+                controller.addCommand.putToCollection(collection, controller.addCommand.readFromXML(route), true);
             }
-        } catch (IOException e) {
+//        int lineCounter = 0;
+//        try (FileReader reader = new FileReader(dataFile)) {
+//            Stack<Route> collection = controller.getRoutes();
+//            String line = "";
+//            while (reader.ready()) {
+//                char c = (char) reader.read();
+//                if (c == '\n') {
+//                    lineCounter++;
+//                    try {
+//                        controller.addCommand.mainMethod(collection, line, true, true);
+//                    } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
+//                        System.err.printf("Ошибка в записи %s: %s%n", lineCounter, e.getMessage());
+//                    } catch (NumberFormatException e) {
+//                        System.err.printf("Ошибка в записи %s: неверный формат числа%n", lineCounter);
+//                    }
+//                    line = "";
+//                } else {
+//                    line += c;
+//                }
+//            }
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             System.err.println("Ошибка при чтении файла: " + e.getMessage());
             System.exit(1);
+        } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
+            System.err.printf("Ошибка при чтении записи %s: %s%n", lineCount, e.getMessage());
         }
     }
 
