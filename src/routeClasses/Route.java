@@ -201,17 +201,42 @@ public class Route implements Comparable<Route> {
     }
 
     /**
-     * Get serialized string.
+     * Get xml representation of Route.
      *
-     * @return the string
      */
-    public String getSerializedString() {
-        return "{%s}".formatted(this.showValues());
-    }
-
     public void appendNode(Document document, Element root) {
         Element id = document.createElement("id");
         id.setAttribute("value", Long.toString(getId()));
         root.appendChild(id);
+        Element name = document.createElement("name");
+        name.setAttribute("value", getName());
+        root.appendChild(name);
+        Element coordinates = document.createElement("coordinates");
+        coordinates.setAttribute("x", Long.toString(getCoordinates().getX()));
+        coordinates.setAttribute("y", Long.toString(getCoordinates().getY()));
+        root.appendChild(coordinates);
+
+        Element creation = document.createElement("creationDate");
+        creation.setAttribute("value", getCreationDate().format(dateFormat));
+        root.appendChild(creation);
+
+        LocationFrom from = getFrom();
+        if (from != null) {
+            Element locationFrom = document.createElement("locationFrom");
+            locationFrom.setAttribute("x", Integer.toString(from.getX()));
+            locationFrom.setAttribute("y", Long.toString(from.getY()));
+            locationFrom.setAttribute("z", Double.toString(from.getZ()));
+            root.appendChild(locationFrom);
+        }
+        Element locationTo = document.createElement("locationTo");
+        locationTo.setAttribute("x", Float.toString(getTo().getX()));
+        locationTo.setAttribute("y", Float.toString(getTo().getY()));
+        locationTo.setAttribute("z", Double.toString(getTo().getZ()));
+        String toName = getTo().getName();
+        if (toName != null) locationTo.setAttribute("name", toName);
+        root.appendChild(locationTo);
+        Element distance = document.createElement("distance");
+        distance.setAttribute("value", Double.toString(getDistance()));
+        root.appendChild(distance);
     }
 }

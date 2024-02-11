@@ -326,14 +326,14 @@ public abstract class ReadRoute {
                     yNode = attributes.getNamedItem("y");
                     zNode = attributes.getNamedItem("z");
                     Node nameNode = attributes.getNamedItem("name");
-                    if (xNode == null || yNode == null || zNode == null || nameNode == null) {
+                    if (xNode == null || yNode == null || zNode == null) {
                         throw new WrongArgumentsException("В поле locationTo не хватает обязательных атрибутов");
                     }
                     route.setTo(new LocationTo(
                             Float.parseFloat(xNode.getNodeValue()),
                             Float.parseFloat(yNode.getNodeValue()),
                             Float.parseFloat(zNode.getNodeValue()),
-                            nameNode.getNodeValue()));
+                            nameNode != null ? nameNode.getNodeValue() : "null"));
                     break;
                 case "distance":
                     route.setDistance(InputValidator.checkDistance(attributes.getNamedItem("value").getNodeValue()));

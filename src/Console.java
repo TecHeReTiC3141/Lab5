@@ -40,7 +40,6 @@ public class Console {
         }
         int lineCount = 0;
         try {
-
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(new File(dataFile));
 
@@ -50,33 +49,15 @@ public class Console {
             for (int i = 0; i < routeElements.getLength(); ++i) {
                 ++lineCount;
                 Node route = routeElements.item(i);
-                controller.addCommand.putToCollection(collection, controller.addCommand.readFromXML(route), true);
+                try {
+                    controller.addCommand.putToCollection(collection, controller.addCommand.readFromXML(route), true);
+                } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
+                    System.err.printf("Ошибка при чтении записи %s: %s%n", lineCount, e.getMessage());
+                }
             }
-//        int lineCounter = 0;
-//        try (FileReader reader = new FileReader(dataFile)) {
-//            Stack<Route> collection = controller.getRoutes();
-//            String line = "";
-//            while (reader.ready()) {
-//                char c = (char) reader.read();
-//                if (c == '\n') {
-//                    lineCounter++;
-//                    try {
-//                        controller.addCommand.mainMethod(collection, line, true, true);
-//                    } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
-//                        System.err.printf("Ошибка в записи %s: %s%n", lineCounter, e.getMessage());
-//                    } catch (NumberFormatException e) {
-//                        System.err.printf("Ошибка в записи %s: неверный формат числа%n", lineCounter);
-//                    }
-//                    line = "";
-//                } else {
-//                    line += c;
-//                }
-//            }
         } catch (IOException | SAXException | ParserConfigurationException e) {
             System.err.println("Ошибка при чтении файла: " + e.getMessage());
             System.exit(1);
-        } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
-            System.err.printf("Ошибка при чтении записи %s: %s%n", lineCount, e.getMessage());
         }
     }
 
@@ -242,6 +223,7 @@ public class Console {
                     try {
                         InputValidator.checkIfOneArgument(commandParts);
                         controller.countGreaterThanDistanceCommand.mainMethod(collection, Double.parseDouble(commandParts[1]));
+                        break;
                     } catch (WrongArgumentsException e) {
                         System.err.println(e.getMessage());
                         return;
