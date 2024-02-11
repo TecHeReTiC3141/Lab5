@@ -343,7 +343,6 @@ public abstract class ReadRoute {
 
             }
             requiredParams.remove(child.getNodeName());
-            System.out.println(child.getNodeName() + " " +  child.getNodeValue());
         }
         if (!requiredParams.isEmpty()) {
             throw new WrongArgumentsException("Не хватает обязательных параметров: " + requiredParams);

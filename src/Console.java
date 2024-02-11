@@ -174,6 +174,9 @@ public class Console {
                     } catch (WrongArgumentsException e) {
                         System.err.println(e.getMessage());
                         return;
+                    } catch (ParserConfigurationException e) {
+                        System.err.println("Ошибка при сохранение");
+                        return;
                     }
                 case "execute_script":
                     try {

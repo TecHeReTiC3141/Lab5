@@ -1,5 +1,8 @@
 package routeClasses;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -202,8 +205,13 @@ public class Route implements Comparable<Route> {
      *
      * @return the string
      */
-    public String getSerializedString(){
+    public String getSerializedString() {
         return "{%s}".formatted(this.showValues());
     }
 
+    public void appendNode(Document document, Element root) {
+        Element id = document.createElement("id");
+        id.setAttribute("value", Long.toString(getId()));
+        root.appendChild(id);
+    }
 }

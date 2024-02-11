@@ -1,37 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Routes>
     <Route>
-        <id value="1" />
-        <name value="Billy" />
-        <coordinates x="35" y="35" />
-        <creationDate value="2024/02/09-18:23:00"/>
-        <locationFrom x="5" y="10" z="1.51"/>
-        <locationTo x="25" y="34" z="234.3" name="Bobby"/>
-        <distance value="53" />
-    </Route>
-    <Route>
-        <id value="34" />
-        <name value="Van" />
-        <coordinates x="64" y="363" />
-        <creationDate value="2024/02/07-18:25:00"/>
-        <locationTo x="25" y="34" z="234.3" name="2 Blocks"/>
-        <distance value="153" />
+        <id value="1"/>
     </Route>
     <Route>
         <id value="34"/>
-        <name value="Van"/>
-        <coordinates x="64" y="363"/>
-        <creationDate value="2024/02/07-18:25:00"/>
-        <locationTo x="25" y="34" z="234.3" name="2 Blocks"/>
-        <distance value="153"/>
     </Route>
     <Route>
         <id value="34"/>
-        <name value="Van"/>
-        <coordinates x="64" y="363"/>
-        <creationDate value="2024/02/07-18:25:00"/>
-        <locationTo x="25" y="34" z="234.3" name="2 Blocks"/>
-        <distance value="153"/>
     </Route>
-
+    <Route>
+        <id value="34"/>
+    </Route>
 </Routes>
