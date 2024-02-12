@@ -1,5 +1,6 @@
 package commands;
 
+import exceptions.AbsentRequiredParametersException;
 import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
@@ -25,6 +26,16 @@ import java.util.Scanner;
  * Абстрактный класс, предоставляющий метод для чтения маршрута из строки.
  */
 public abstract class ReadRoute {
+
+    /**
+     * Метод для чтения маршрута из ввода пользователя
+     * (нужно сначала ввести name и distance, затем будут запрошены остальные данные).
+     * @param value строка, содержащая значения начальных полей маршрута
+     * @return прочитанный объект класса Route
+     * @throws InvalidNameException если имя маршрута некорректно
+     * @throws InvalidDistanceException если дистанция маршрута некорректна
+     * @throws WrongArgumentsException если введены некорректные аргументы
+     */
 
     public Route readRoute(String value) throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
         Route route = new Route();
@@ -195,7 +206,17 @@ public abstract class ReadRoute {
         return route;
     }
 
-    public Route parseRoute(String line) throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
+    /**
+     * Метод для чтения маршрута из строки, содержащей все необходимые поля маршрута.
+     * Используется при чтении add и update команд, запущенные в execute_script.
+     * @param line строка, содержащая значения полей маршрута
+     * @return прочитанный объект класса Route
+     * @throws InvalidNameException если имя маршрута некорректно
+     * @throws InvalidDistanceException если дистанция маршрута некорректна
+     * @throws WrongArgumentsException если введены некорректные аргументы
+     * @throws AbsentRequiredParametersException если не хватает обязательных параметров
+     */
+    public Route parseRoute(String line) throws InvalidNameException, InvalidDistanceException, WrongArgumentsException, AbsentRequiredParametersException {
         String[] pairs = line.trim().replace('{', ' ').replace('}', ' ')
                 .replace("\"", "").replace("'", "").split(",");
         Route route = new Route();
@@ -266,7 +287,7 @@ public abstract class ReadRoute {
             requiredParams.remove(key);
         }
         if (!requiredParams.isEmpty()) {
-            throw new WrongArgumentsException("Не хватает обязательных параметров: " + requiredParams);
+            throw new AbsentRequiredParametersException("Не хватает обязательных параметров: " + requiredParams);
         }
         route.setCoordinates(coordinates);
         route.setTo(locationTo);
@@ -276,7 +297,18 @@ public abstract class ReadRoute {
         return route;
     }
 
-    public Route readFromXML(Node routeNode) throws InvalidNameException, WrongArgumentsException, InvalidDistanceException {
+    /**
+     * Метод для чтения маршрута из XML-файла.
+     * Используется для изначального чтения маршрутов из файла из системной переменной DATA_FILE.
+     * @param routeNode узел XML-файла, содержащий информацию о маршруте
+     * @return прочитанный объект класса Route
+     * @throws InvalidNameException если имя маршрута некорректно
+     * @throws InvalidDistanceException если дистанция маршрута некорректна
+     * @throws WrongArgumentsException если есть некорректные аргументы
+     * @throws AbsentRequiredParametersException если не хватает обязательных параметров
+     */
+
+    public Route readFromXML(Node routeNode) throws InvalidNameException, WrongArgumentsException, InvalidDistanceException, AbsentRequiredParametersException {
         ArrayList<String> requiredParams = new ArrayList<>(
                 List.of("name, distance, coordinates, creationDate, locationTo".split(", "))
         );
@@ -345,7 +377,7 @@ public abstract class ReadRoute {
             requiredParams.remove(child.getNodeName());
         }
         if (!requiredParams.isEmpty()) {
-            throw new WrongArgumentsException("Не хватает обязательных параметров: " + requiredParams);
+            throw new AbsentRequiredParametersException("Не хватает обязательных параметров: " + requiredParams);
         }
         return route;
     }

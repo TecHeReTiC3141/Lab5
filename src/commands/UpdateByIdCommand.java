@@ -1,5 +1,6 @@
 package commands;
 
+import exceptions.AbsentRequiredParametersException;
 import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
@@ -25,7 +26,7 @@ public class UpdateByIdCommand extends ReadRoute {
      * @throws InvalidDistanceException  если дистанция элемента некорректна
      */
     public void mainMethod(Stack<Route> collection, long id, String value, boolean parse)
-            throws InvalidNameException, WrongArgumentsException, InvalidDistanceException {
+            throws InvalidNameException, WrongArgumentsException, InvalidDistanceException, AbsentRequiredParametersException {
         boolean isFound = false;
         for (Route route : collection) {
             isFound |= route.getId() == id;

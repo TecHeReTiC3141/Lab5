@@ -5,7 +5,18 @@ import routeClasses.RouteDistanceComparator;
 
 import java.util.Stack;
 
+/**
+ * Класс, реализующий команду print_field_descending_distance,
+ * которая выводит значения поля distance элементов коллекции в порядке убывания.
+ */
+
 public class PrintFieldDescendingDistanceCommand {
+
+    /**
+     * Метод, реализующий логику  команды print_field_descending_distance.
+     *
+     * @param collection коллекция, над которой выполняется команда
+     */
 
     public void mainMethod(Stack<Route> collection) {
         if (collection.isEmpty()) {

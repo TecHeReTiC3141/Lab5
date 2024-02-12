@@ -1,7 +1,4 @@
-import exceptions.InvalidDistanceException;
-import exceptions.InvalidNameException;
-import exceptions.UnknownCommandException;
-import exceptions.WrongArgumentsException;
+import exceptions.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -68,7 +65,8 @@ public class Console {
                 Node route = routeElements.item(i);
                 try {
                     controller.addCommand.putToCollection(collection, controller.addCommand.readFromXML(route), true);
-                } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException e) {
+                } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException |
+                         AbsentRequiredParametersException e) {
                     System.err.printf("Ошибка при чтении записи %s: %s%n", lineCount, e.getMessage());
                 }
             }
@@ -148,7 +146,8 @@ public class Console {
                         InputValidator.checkIfOneArgument(commandParts);
                         controller.addCommand.mainMethod(collection, commandParts[1], depth > 1, false);
                         break;
-                    } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException e) {
+                    } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
+                             AbsentRequiredParametersException e) {
                         System.err.println(e.getMessage());
                         return;
                     } catch (ArrayIndexOutOfBoundsException e) {
@@ -160,7 +159,8 @@ public class Console {
                         InputValidator.checkIfTwoArguments(commandParts);
                         controller.updateByIdCommand.mainMethod(collection, Long.parseLong(commandParts[1]), commandParts[2], depth > 1);
                         break;
-                    } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException e) {
+                    } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
+                             AbsentRequiredParametersException e) {
                         System.err.println(e.getMessage());
                         return;
                     } catch (NumberFormatException e) {

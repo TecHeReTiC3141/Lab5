@@ -1,5 +1,6 @@
 package commands;
 
+import exceptions.AbsentRequiredParametersException;
 import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
@@ -52,7 +53,7 @@ public class AddCommand extends ReadRoute {
      */
 
     public void mainMethod(Stack<Route> collection, String value, boolean parse, boolean silence)
-            throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
+            throws InvalidNameException, InvalidDistanceException, WrongArgumentsException, AbsentRequiredParametersException {
         Route route = parse ? parseRoute(value) : readRoute(value);
         putToCollection(collection, route, silence);
     }

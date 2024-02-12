@@ -1,3 +1,38 @@
-{id=3,name=Billy,coordinatesX=53,coordinatesY=4,creationDate=2024/02/09-18:23:00,toX=53.0,toY=43.1,toZ=43.0,toName=tyo,distance=24.0}
-{id=1,name=A,coordinatesX=4,coordinatesY=5,creationDate=2024/02/09-21:45:50,toX=5.3,toY=4.1,toZ=4.432,toName=4353,distance=100.0}
-{id=2,name=B,coordinatesX=5,coordinatesY=3,creationDate=2024/02/09-21:45:50,toX=5.4,toY=3.4,toZ=0.1,toName=tytytyewu,distance=500.0,fromX=5,fromY=2,fromZ=10.0}
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Routes>
+    <Route>
+        <id value="1"/>
+        <name value="BIlly"/>
+        <coordinates x="35" y="459"/>
+        <creationDate value="2024/02/09-18:23:00"/>
+        <locationTo name="Gym" x="192.0" y="239.0" z="1234.0"/>
+        <distance value="23498.0"/>
+    </Route>
+    <Route>
+        <id value="134"/>
+        <name value="BIlly"/>
+        <coordinates x="35" y="459"/>
+        <creationDate value="2024/02/09-18:23:00"/>
+        <locationFrom x="39" y="92" z="134.0"/>
+        <locationTo name="null" x="192.0" y="239.0" z="1234.0"/>
+        <distance value="23498.0"/>
+    </Route>
+    <Route>
+        <id value="321"/>
+        <name value="BIlly"/>
+        <coordinates x="35" y="459"/>
+        <creationDate value="2024/02/09-18:23:00"/>
+        <locationFrom x="39" y="92" z="134.0"/>
+        <locationTo name="null" x="192.0" y="239.0" z="1234.0"/>
+        <distance value="23498.0"/>
+    </Route>
+    <Route>
+        <id value="2"/>
+        <name value="Sally"/>
+        <coordinates x="4" y="53"/>
+        <creationDate value="2024/02/11-19:49:16"/>
+        <locationFrom x="42" y="345" z="234.43"/>
+        <locationTo name="null" x="2.0" y="34.4" z="234.0"/>
+        <distance value="500.0"/>
+    </Route>
+</Routes>

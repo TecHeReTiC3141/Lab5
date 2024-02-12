@@ -8,8 +8,15 @@ import exceptions.WrongArgumentsException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+* Класс, содержащий методы для проверки валидности ввода пользователя.
+ */
+
 public class InputValidator {
 
+    /**
+     * Список всех возможных команд.
+     */
     private static final ArrayList<String> ValidCommands = new ArrayList<>(
             Arrays.asList(
                     "help",
@@ -31,24 +38,44 @@ public class InputValidator {
             )
     );
 
-
+    /**
+     * Проверка на валидность введенной команды.
+     * @param command введенная команда
+     * @throws UnknownCommandException исключение, если команда не найдена
+     */
     public static void checkIsValidCommand(String command) throws UnknownCommandException {
         if (!ValidCommands.contains(command)) {
             throw new UnknownCommandException(command);
         }
     }
 
+    /**
+     * Проверка на отсутствие аргументов команды.
+     * @param commandParts массив, содержащий команду и аргументы
+     * @throws WrongArgumentsException исключение, если количество аргументов неверное
+     */
     public static void checkIfNoArguments(String[] commandParts) throws WrongArgumentsException {
         if (commandParts.length != 1) {
             throw new WrongArgumentsException("Команда %s не принимает аргументы".formatted(commandParts[0]));
         }
     }
 
+    /**
+     * Проверка на наличие ровно 1 аргумента команды.
+     * @param commandParts массив, содержащий команду и аргументы
+     * @throws WrongArgumentsException исключение, если количество аргументов неверное
+     */
     public static void checkIfOneArgument(String[] commandParts) throws WrongArgumentsException {
         if (commandParts.length != 2) {
             throw new WrongArgumentsException("Команда %s принимает ровно 1 аргумент".formatted(commandParts[0]));
         }
     }
+
+    /**
+     * Проверка на наличие ровно 2 аргументов команды.
+     * @param commandParts массив, содержащий команду и аргументы
+     * @throws WrongArgumentsException исключение, если количество аргументов неверное
+     */
 
     public static void checkIfTwoArguments(String[] commandParts) throws WrongArgumentsException {
         if (commandParts.length != 3) {
@@ -56,6 +83,12 @@ public class InputValidator {
         }
     }
 
+    /**
+     * Проверка валидности имени (не пустое).
+     * @param name имя
+     * @return валидное имя
+     * @throws InvalidNameException исключение, если имя невалидное
+     */
     public static String checkName(String name) throws InvalidNameException {
         if (name == null || name.isEmpty()) {
             throw new InvalidNameException();
@@ -63,6 +96,12 @@ public class InputValidator {
         return name;
     }
 
+    /**
+     * Проверка валидности дистанции (больше 0).
+     * @param distance дистанция
+     * @return валидная дистанция
+     * @throws InvalidDistanceException исключение, если дистанция невалидная
+     */
     public static double checkDistance(String distance) throws InvalidDistanceException {
         double d = Double.parseDouble(distance);
         if (d <= 0d) {
@@ -71,6 +110,10 @@ public class InputValidator {
         return d;
     }
 
+    /**
+     * Проверка на валидность ответа (yes или no).
+     * @param answer ответ
+     */
     public static void checkIfYesOrNo(String answer) {
         if (!answer.equals("yes") && !answer.equals("no")) {
             throw new IllegalArgumentException("Введите yes или no");

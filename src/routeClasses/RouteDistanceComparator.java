@@ -3,7 +3,7 @@ package routeClasses;
 import java.util.Comparator;
 
 /**
- * Компаратор для сортировки коллекции по дистанции, используется в команде print_field_descending_distance
+ * Компаратор для сортировки коллекции по убыванию дистанции, используется в команде print_field_descending_distance
  */
 public class RouteDistanceComparator implements Comparator<Route> {
 
