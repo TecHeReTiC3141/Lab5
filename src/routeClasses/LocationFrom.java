@@ -12,14 +12,15 @@ public class LocationFrom {
     /**
      * Instantiates a new Location from.
      */
-    public LocationFrom() {}
+    public LocationFrom() {
+    }
 
     /**
      * Instantiates a new Location from.
      *
-     * @param x    the x
-     * @param y    the y
-     * @param name the name
+     * @param x the x
+     * @param y the y
+     * @param z the z
      */
     public LocationFrom(Integer x, Long y, Double z) {
         this.x = x;

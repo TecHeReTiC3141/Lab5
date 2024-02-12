@@ -24,6 +24,7 @@ public class UpdateByIdCommand extends ReadRoute {
      * @throws InvalidNameException      если имя элемента некорректно
      * @throws WrongArgumentsException   если аргументы команды введены неверно
      * @throws InvalidDistanceException  если дистанция элемента некорректна
+     * @throws AbsentRequiredParametersException если не хватает обязательных параметров
      */
     public void mainMethod(Stack<Route> collection, long id, String value, boolean parse)
             throws InvalidNameException, WrongArgumentsException, InvalidDistanceException, AbsentRequiredParametersException {

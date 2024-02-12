@@ -50,6 +50,7 @@ public class AddCommand extends ReadRoute {
      * @throws InvalidNameException     the invalid name exception
      * @throws InvalidDistanceException the invalid distance exception
      * @throws WrongArgumentsException  the wrong arguments exception
+     * @throws AbsentRequiredParametersException the absent required parameters exception
      */
 
     public void mainMethod(Stack<Route> collection, String value, boolean parse, boolean silence)

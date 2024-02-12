@@ -76,7 +76,7 @@ public class RouteController {
      *
      * @param val the val
      */
-    void setRoutes(Stack<Route> val) {
+    public void setRoutes(Stack<Route> val) {
         routes = val;
     }
 
@@ -85,7 +85,7 @@ public class RouteController {
      *
      * @return the routes
      */
-    Stack<Route> getRoutes() {
+    public Stack<Route> getRoutes() {
         return routes;
     }
 }
