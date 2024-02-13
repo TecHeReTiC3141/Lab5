@@ -2,6 +2,7 @@ import exceptions.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import routeClasses.Route;
 import utils.InputValidator;
@@ -9,7 +10,6 @@ import utils.InputValidator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
@@ -53,12 +53,12 @@ public class Console {
             System.exit(1);
         }
         int lineCount = 0;
-        try {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.parse(new File(dataFile));
 
+        try (FileReader reader = new FileReader(dataFile)) {
             Stack<Route> collection = controller.getRoutes();
 
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(reader));
             NodeList routeElements = doc.getDocumentElement().getElementsByTagName("Route");
             for (int i = 0; i < routeElements.getLength(); ++i) {
                 ++lineCount;
@@ -160,7 +160,7 @@ public class Console {
                         controller.updateByIdCommand.mainMethod(collection, Long.parseLong(commandParts[1]), commandParts[2], depth > 1);
                         break;
                     } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
-                             AbsentRequiredParametersException e) {
+                             AbsentRequiredParametersException | ArrayIndexOutOfBoundsException e) {
                         System.err.println(e.getMessage());
                         return;
                     } catch (NumberFormatException e) {

@@ -49,7 +49,7 @@ public abstract class ReadRoute {
                 .replace(" ", "")
                 .replace("\"", "").split(",");
         if (initParams.length != 2) {
-            throw new ArrayIndexOutOfBoundsException("Неверное количество параметров");
+            throw new ArrayIndexOutOfBoundsException("Неверное количество параметров. Введите значение в формате {name=\"Billy\",distance=34.4");
         }
         for (String pair : initParams) {
             String[] keyValue = pair.split("=");
