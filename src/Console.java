@@ -1,3 +1,5 @@
+import commands.AddCommand;
+import commands.BaseCommand;
 import exceptions.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -12,7 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Date;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -21,14 +23,19 @@ import java.util.Stack;
  */
 
 public class Console {
-    /**
-     * Контроллер, содержащий все команду и коллекцию.
-     */
-    private final RouteController controller = new RouteController();
-    /**
-     * Дата инициализации приложения и коллекции
-     */
-    private Date initDate = new Date();
+
+    private final Map<String, BaseCommand> commands;
+    private final Stack<Route> collection;
+
+    private final AddCommand AddonLoadingCommand;
+
+    public Console(Stack<Route> collection, Map<String, BaseCommand> commands) {
+        this.collection = collection;
+        this.commands = commands;
+        AddonLoadingCommand = new AddCommand("add", "only for loading of initial collection", collection);
+    }
+
+
     /**
      * Путь к файлу, в котором хранится коллекция и куда она сохраняется
      */
@@ -55,7 +62,6 @@ public class Console {
         int lineCount = 0;
 
         try (FileReader reader = new FileReader(dataFile)) {
-            Stack<Route> collection = controller.getRoutes();
 
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(new InputSource(reader));
@@ -64,7 +70,7 @@ public class Console {
                 ++lineCount;
                 Node route = routeElements.item(i);
                 try {
-                    controller.addCommand.putToCollection(collection, controller.addCommand.readFromXML(route), true);
+                    AddonLoadingCommand.putToCollection(collection, AddonLoadingCommand.readFromXML(route), true);
                 } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException |
                          AbsentRequiredParametersException e) {
                     System.err.printf("Ошибка при чтении записи %s: %s%n", lineCount, e.getMessage());
@@ -111,41 +117,9 @@ public class Console {
             return;
         }
 
-        Stack<Route> collection = controller.getRoutes();
         try {
             InputValidator.checkIsValidCommand(commandParts[0]);
             switch (commandParts[0]) {
-                case "help":
-                    controller.helpCommand.execute(commandParts);
-                    break;
-                case "info":
-                    controller.infoCommand.execute(commandParts);
-                    break;
-
-                case "show":
-                    controller.showCommand.execute(commandParts);
-                    break;
-
-                case "add":
-                    controller.addCommand.execute(commandParts, depth > 1);
-                    break;
-
-                case "update":
-                    controller.updateByIdCommand.execute(commandParts, depth > 1);
-                    break;
-
-                case "remove_by_id":
-                    controller.removeByIdCommand.execute(commandParts);
-                    break;
-
-                case "clear":
-                    controller.clearCommand.execute(commandParts);
-                    break;
-
-                case "save":
-                    controller.saveCommand.execute(commandParts);
-                    break;
-
                 case "execute_script":
                     try {
                         InputValidator.checkIfOneArgument(commandParts);
@@ -174,29 +148,8 @@ public class Console {
                         System.err.println(e.getMessage());
                         return;
                     }
-                case "remove_at":
-                    controller.removeAtCommand.execute(commandParts);
-                    break;
-
-                case "reorder":
-                    controller.reorderCommand.execute(commandParts);
-                    break;
-
-                case "sort":
-                    controller.sortCommand.execute(commandParts);
-                    break;
-
-                case "count_greater_than_distance":
-                    controller.countGreaterThanDistanceCommand.execute(commandParts);
-                    break;
-
-                case "print_ascending":
-                    controller.printAscendingCommand.execute(commandParts);
-                    break;
-
-                case "print_field_descending_distance":
-                    controller.printDescendingDistanceCommand.execute(commandParts);
-                    break;
+                default:
+                    commands.get(commandParts[0]).execute(commandParts);
             }
         } catch (UnknownCommandException e) {
             System.err.println(e.getMessage());

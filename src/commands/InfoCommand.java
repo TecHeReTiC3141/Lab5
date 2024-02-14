@@ -13,6 +13,9 @@ import java.util.Stack;
 
 public class InfoCommand extends BaseCommand {
 
+    /**
+     * Дата инициализации приложения и коллекции
+     */
     private final Date initDate = new Date();
 
 
