@@ -5,6 +5,7 @@ import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
 import routeClasses.Route;
+import utils.InputValidator;
 
 import java.util.Stack;
 
@@ -14,12 +15,16 @@ import java.util.Stack;
  */
 public class AddCommand extends ReadRoute {
 
+
+    public AddCommand(String name, String description, Stack<Route> collection) {
+        super(name, description, collection);
+    }
+
     /**
      * Метод, добавляющий route в коллекцию и устанавливающий id элемента при необходимости.
      *
      * @param collection коллекция, в которую нужно добавить элемент
      * @param route      элемент, который нужно добавить
-     * @param silence    флаг, определяющий, нужно ли выводить сообщения о результате выполнения метода
      */
 
     public void putToCollection(Stack<Route> collection, Route route, boolean silence) {
@@ -43,19 +48,23 @@ public class AddCommand extends ReadRoute {
     /**
      * Метод, считывающий route и его в коллекци.
      *
-     * @param collection коллекция, в которую нужно добавить элемент
-     * @param value      строка, содержащая информацию об элементе
-     * @param parse      флаг, определяющий, нужно ли парсить строку
-     * @param silence    флаг, определяющий, нужно ли выводить сообщения о результате выполнения метода
-     * @throws InvalidNameException     the invalid name exception
-     * @throws InvalidDistanceException the invalid distance exception
-     * @throws WrongArgumentsException  the wrong arguments exception
-     * @throws AbsentRequiredParametersException the absent required parameters exception
+     * @param commandParts массив, содержащий название аргументы команды
      */
 
-    public void mainMethod(Stack<Route> collection, String value, boolean parse, boolean silence)
-            throws InvalidNameException, InvalidDistanceException, WrongArgumentsException, AbsentRequiredParametersException {
-        Route route = parse ? parseRoute(value) : readRoute(value);
-        putToCollection(collection, route, silence);
+    public void execute(String[] commandParts, boolean parse) {
+        try {
+            InputValidator.checkIfOneArgument(commandParts);
+            Route route = parse ? parseRoute(commandParts[1]) : readRoute(commandParts[1]);
+            putToCollection(collection, route, false);
+        } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
+                 AbsentRequiredParametersException e) {
+            System.err.println(e.getMessage());
+            return;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Должно быть ровно 2 начальных параметра (name и distance)");
+            return;
+        }
+
     }
+
 }

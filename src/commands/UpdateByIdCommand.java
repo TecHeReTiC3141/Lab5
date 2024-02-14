@@ -5,6 +5,7 @@ import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
 import routeClasses.Route;
+import utils.InputValidator;
 
 import java.util.Stack;
 
@@ -14,37 +15,44 @@ import java.util.Stack;
 
 public class UpdateByIdCommand extends ReadRoute {
 
+    public UpdateByIdCommand(String name, String description, Stack<Route> collection) {
+        super(name, description, collection);
+    }
+
     /**
      * Метод, реализующий логику команды update.
      *
-     * @param collection коллекция, в которой происходит обновление
-     * @param id         id элемента, который нужно обновить
-     * @param value      строковое представление нового элемента
-     * @param parse      нужно ли парсить строку в элемент
-     * @throws InvalidNameException      если имя элемента некорректно
-     * @throws WrongArgumentsException   если аргументы команды введены неверно
-     * @throws InvalidDistanceException  если дистанция элемента некорректна
-     * @throws AbsentRequiredParametersException если не хватает обязательных параметров
+     * @param commandParts массив, содержащий название аргументы команды
      */
-    public void mainMethod(Stack<Route> collection, long id, String value, boolean parse)
-            throws InvalidNameException, WrongArgumentsException, InvalidDistanceException, AbsentRequiredParametersException {
-        boolean isFound = false;
-        for (Route route : collection) {
-            isFound |= route.getId() == id;
-        }
-        if (!isFound) {
-            System.out.println("Элемент с id " + id + " не найден. Обновление не выполнено.");
-            return;
-        }
-        Route newRoute = parse ? parseRoute(value) : readRoute(value);
-        newRoute.setId(id);
-        for (Route route : collection) {
-            if (route.getId() == id) {
-                collection.remove(route);
-                collection.add(newRoute);
-                System.out.println("Элемент с id " + id + " успешно обновлен.");
-                break;
+    public void execute(String[] commandParts, boolean parse) {
+        try {
+            Long id = Long.parseLong(commandParts[1]);
+            String value = commandParts[2];
+            InputValidator.checkIfTwoArguments(commandParts);
+            boolean isFound = false;
+            for (Route route : collection) {
+                isFound |= route.getId() == id;
             }
+            if (!isFound) {
+                System.out.println("Элемент с id " + id + " не найден. Обновление не выполнено.");
+                return;
+            }
+            Route newRoute = parse ? parseRoute(value) : readRoute(value);
+            newRoute.setId(id);
+            for (Route route : collection) {
+                if (route.getId() == id) {
+                    collection.remove(route);
+                    collection.add(newRoute);
+                    System.out.println("Элемент с id " + id + " успешно обновлен.");
+                    break;
+                }
+            }
+        } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
+                 AbsentRequiredParametersException | ArrayIndexOutOfBoundsException e) {
+            System.err.println(e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("ID должен быть целым числом");
         }
+
     }
 }

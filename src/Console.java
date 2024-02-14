@@ -94,7 +94,8 @@ public class Console {
 
     /**
      * Метод, обрабатывающий команду, введенную пользователем
-     * @param line строка, содержащая команду
+     *
+     * @param line  строка, содержащая команду
      * @param depth глубина рекурсии, используется для предотвращения бесконечной рекурсии при вызове execute_script
      */
 
@@ -115,91 +116,36 @@ public class Console {
             InputValidator.checkIsValidCommand(commandParts[0]);
             switch (commandParts[0]) {
                 case "help":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.helpCommand.mainMethod();
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    }
+                    controller.helpCommand.execute(commandParts);
+                    break;
                 case "info":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.infoCommand.mainMethod(collection, initDate);
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    }
+                    controller.infoCommand.execute(commandParts);
+                    break;
+
                 case "show":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.showCommand.mainMethod(collection);
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    }
+                    controller.showCommand.execute(commandParts);
+                    break;
+
                 case "add":
-                    try {
-                        InputValidator.checkIfOneArgument(commandParts);
-                        controller.addCommand.mainMethod(collection, commandParts[1], depth > 1, false);
-                        break;
-                    } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
-                             AbsentRequiredParametersException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        System.err.println("Должно быть ровно 2 начальных параметра (name и distance)");
-                        return;
-                    }
-                    case "update":
-                    try {
-                        InputValidator.checkIfTwoArguments(commandParts);
-                        controller.updateByIdCommand.mainMethod(collection, Long.parseLong(commandParts[1]), commandParts[2], depth > 1);
-                        break;
-                    } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
-                             AbsentRequiredParametersException | ArrayIndexOutOfBoundsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    } catch (NumberFormatException e) {
-                        System.err.println("ID должен быть целым числом");
-                        return;
-                    }
+                    controller.addCommand.execute(commandParts, depth > 1);
+                    break;
+
+                case "update":
+                    controller.updateByIdCommand.execute(commandParts, depth > 1);
+                    break;
+
                 case "remove_by_id":
-                    try {
-                        InputValidator.checkIfOneArgument(commandParts);
-                        controller.removeByIdCommand.mainMethod(collection, Integer.parseInt(commandParts[1]));
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    } catch (NumberFormatException e) {
-                        System.err.println("ID должен быть целым числом");
-                        return;
-                    }
+                    controller.removeByIdCommand.execute(commandParts);
+                    break;
+
                 case "clear":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.clearCommand.mainMethod(collection);
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    }
+                    controller.clearCommand.execute(commandParts);
+                    break;
+
                 case "save":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.saveCommand.mainMethod(dataFile, collection);
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    } catch (ParserConfigurationException e) {
-                        System.err.println("Ошибка при сохранение");
-                        return;
-                    }
+                    controller.saveCommand.execute(commandParts);
+                    break;
+
                 case "execute_script":
                     try {
                         InputValidator.checkIfOneArgument(commandParts);
@@ -229,73 +175,32 @@ public class Console {
                         return;
                     }
                 case "remove_at":
-                    try {
-                        InputValidator.checkIfOneArgument(commandParts);
-                        controller.removeAtCommand.mainMethod(collection, Integer.parseInt(commandParts[1]));
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    } catch (NumberFormatException e) {
-                        System.err.println("index должен быть целым числом");
-                        return;
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        System.err.println("Элемента с таким индексом не существует. Проверьте, что это число больше 0 и меньше размера коллекции");
-                    }
-                case "reorder":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.reorderCommand.mainMethod(collection);
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    }
-                case "sort":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.sortCommand.mainMethod(collection);
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    }
-                case "count_greater_than_distance":
-                    try {
-                        InputValidator.checkIfOneArgument(commandParts);
-                        controller.countGreaterThanDistanceCommand.mainMethod(collection, Double.parseDouble(commandParts[1]));
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    } catch (NumberFormatException e) {
-                        System.err.println("distance должен быть положительным вещественным числом");
-                        return;
-                    }
-                case "print_ascending":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.printAscendingCommand.mainMethod(collection);
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    }
-                case "print_field_descending_distance":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        controller.printDescendingDistanceCommand.mainMethod(collection);
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return;
-                    }
+                    controller.removeAtCommand.execute(commandParts);
+                    break;
 
+                case "reorder":
+                    controller.reorderCommand.execute(commandParts);
+                    break;
+
+                case "sort":
+                    controller.sortCommand.execute(commandParts);
+                    break;
+
+                case "count_greater_than_distance":
+                    controller.countGreaterThanDistanceCommand.execute(commandParts);
+                    break;
+
+                case "print_ascending":
+                    controller.printAscendingCommand.execute(commandParts);
+                    break;
+
+                case "print_field_descending_distance":
+                    controller.printDescendingDistanceCommand.execute(commandParts);
+                    break;
             }
         } catch (UnknownCommandException e) {
             System.err.println(e.getMessage());
         }
-
     }
 
 }

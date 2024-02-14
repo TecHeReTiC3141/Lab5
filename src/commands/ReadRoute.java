@@ -20,12 +20,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Stack;
 
 
 /**
  * Абстрактный класс, предоставляющий метод для чтения маршрута из строки.
  */
-public abstract class ReadRoute {
+public abstract class ReadRoute extends BaseCommand {
+
+    public ReadRoute(String name, String description, Stack<Route> collection) {
+        super(name, description, collection, true);
+    }
 
     /**
      * Метод для чтения маршрута из ввода пользователя

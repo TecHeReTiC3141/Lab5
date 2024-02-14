@@ -1,10 +1,12 @@
 package commands;
 
+import exceptions.WrongArgumentsException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import routeClasses.Route;
+import utils.InputValidator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,7 +28,13 @@ import java.util.Stack;
  * Класс, реализующий команду save, которая сохраняет коллекцию в файл.
  */
 
-public class SaveCommand {
+public class SaveCommand extends BaseCommand {
+
+    private final String dataFile = System.getenv("DATA_FILE");
+
+    public SaveCommand(String name, String description, Stack<Route> collection) {
+        super(name, description, collection, false);
+    }
 
     /**
      * Метод, преобразующий объект типа Node в строку.
@@ -46,14 +54,14 @@ public class SaveCommand {
             node.normalize();
             XPath xpath = XPathFactory.newInstance().newXPath();
             XPathExpression expr = xpath.compile("//text()[normalize-space()='']");
-            NodeList nodeList = (NodeList)expr.evaluate(node, XPathConstants.NODESET);
+            NodeList nodeList = (NodeList) expr.evaluate(node, XPathConstants.NODESET);
 
             for (int i = 0; i < nodeList.getLength(); ++i) {
                 Node nd = nodeList.item(i);
                 nd.getParentNode().removeChild(nd);
             }
 
-            Transformer transformer =  TransformerFactory.newInstance().newTransformer();
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
             if (omitXmlDeclaration) {
@@ -76,32 +84,40 @@ public class SaveCommand {
     /**
      * Метод, сохраняющий коллекцию в файл.
      *
-     * @param filename   имя файла, в который будет сохранена коллекция
-     * @param collection коллекция, которая будет сохранена
-     * @throws ParserConfigurationException исключение, возникающее при работе с xml
+     * @param commandParts массив, содержащий название и аргументы команды
      */
-    public void mainMethod(String filename, Stack<Route> collection) throws ParserConfigurationException {
-
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
-        Document document = builder.newDocument();
-        Element root = document.createElement("Routes");
-        document.appendChild(root);
-
+    public void execute(String[] commandParts) {
         if (collection.isEmpty()) {
             System.out.println("Коллекция пуста, нечего сохранять.");
             return;
         }
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            for (Route route : collection) {
-                Element newRouteRoot = document.createElement("Route");
-                route.appendNode(document, newRouteRoot);
-                root.appendChild(newRouteRoot);
+        try {
+            InputValidator.checkIfNoArguments(commandParts);
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+            Document document = builder.newDocument();
+            Element root = document.createElement("Routes");
+            document.appendChild(root);
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
+                for (Route route : collection) {
+                    Element newRouteRoot = document.createElement("Route");
+                    route.appendNode(document, newRouteRoot);
+                    root.appendChild(newRouteRoot);
+                }
+                System.out.println("Коллекция успешно сохранена в файл " + dataFile);
+                writer.write(nodeToString(document, false, true));
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
-            System.out.println("Коллекция успешно сохранена в файл " + filename);
-            writer.write(nodeToString(document, false, true));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        } catch (WrongArgumentsException e) {
+            System.err.println(e.getMessage());
+            return;
+        } catch (ParserConfigurationException e) {
+            System.err.println("Ошибка при сохранение");
+            return;
         }
+
+
     }
 }
