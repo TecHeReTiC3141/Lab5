@@ -37,7 +37,6 @@ public class ReorderCommand extends BaseCommand {
             System.out.println("Порядок элементов коллекции изменен на обратный");
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
-            return;
         }
 
     }

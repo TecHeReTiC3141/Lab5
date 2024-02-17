@@ -35,6 +35,5 @@ public class SortCommand extends BaseCommand {
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         }
-//        collection.sort(Route::compareTo);
     }
 }

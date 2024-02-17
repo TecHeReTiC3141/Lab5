@@ -87,12 +87,13 @@ public class SaveCommand extends BaseCommand {
      * @param commandParts массив, содержащий название и аргументы команды
      */
     public void execute(String[] commandParts) {
-        if (collection.isEmpty()) {
-            System.out.println("Коллекция пуста, нечего сохранять.");
-            return;
-        }
+
         try {
             InputValidator.checkIfNoArguments(commandParts);
+            if (collection.isEmpty()) {
+                System.out.println("Коллекция пуста, нечего сохранять.");
+                return;
+            }
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
             Document document = builder.newDocument();
@@ -112,10 +113,8 @@ public class SaveCommand extends BaseCommand {
             }
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
-            return;
         } catch (ParserConfigurationException e) {
             System.err.println("Ошибка при сохранение");
-            return;
         }
 
 

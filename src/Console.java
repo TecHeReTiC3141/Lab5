@@ -24,11 +24,27 @@ import java.util.Stack;
 
 public class Console {
 
+    /**
+     * Map, содержащий все команды, доступные пользователю
+     */
     private final Map<String, BaseCommand> commands;
+
+    /**
+     * Коллекция, с которой работает консоль
+     */
     private final Stack<Route> collection;
 
+    /**
+     * Команда, используемая для загрузки начальной коллекции
+     */
     private final AddCommand AddonLoadingCommand;
 
+    /**
+     * Конструктор класса
+     *
+     * @param collection коллекция, с которой работает консоль
+     * @param commands   Map, содержащий все команды, доступные пользователю
+     */
     public Console(Stack<Route> collection, Map<String, BaseCommand> commands) {
         this.collection = collection;
         this.commands = commands;
@@ -103,22 +119,24 @@ public class Console {
      *
      * @param line  строка, содержащая команду
      * @param depth глубина рекурсии, используется для предотвращения бесконечной рекурсии при вызове execute_script
+     * @return true, если команда была успешно обработана, иначе false
+     * @see BaseCommand#execute(String[])
      */
 
-    public void processCommand(String line, int depth) {
+    public boolean processCommand(String line, int depth) {
         if (depth > 1000) {
             System.out.println("Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя");
-            return;
+            return false;
         }
 
         String[] commandParts = line.trim().split(" ");
 
         if (commandParts.length == 0) {
-            return;
+            return true;
         }
 
         try {
-            InputValidator.checkIsValidCommand(commandParts[0]);
+            InputValidator.checkIsValidCommand(commandParts[0], commands.keySet());
             switch (commandParts[0]) {
                 case "execute_script":
                     try {
@@ -127,7 +145,11 @@ public class Console {
                         try (FileReader reader = new FileReader(filename)) {
                             Scanner scanner = new Scanner(reader);
                             while (scanner.hasNextLine()) {
-                                processCommand(scanner.nextLine(), depth + 1);
+                                boolean finished = processCommand(scanner.nextLine(), depth + 1);
+                                if (!finished) {
+                                    System.err.println("Ошибка при выполнении скрипта, проверьте правильность команд " + filename);
+                                    break;
+                                }
                             }
                         } catch (IOException e) {
                             System.err.println("Ошибка при чтении файла: " + e.getMessage());
@@ -136,7 +158,7 @@ public class Console {
                         break;
                     } catch (WrongArgumentsException e) {
                         System.err.println(e.getMessage());
-                        return;
+                        return false;
                     }
                 case "exit":
                     try {
@@ -146,7 +168,7 @@ public class Console {
                         break;
                     } catch (WrongArgumentsException e) {
                         System.err.println(e.getMessage());
-                        return;
+                        return false;
                     }
                 default:
                     BaseCommand command = commands.get(commandParts[0]);
@@ -158,7 +180,9 @@ public class Console {
             }
         } catch (UnknownCommandException e) {
             System.err.println(e.getMessage());
+            return false;
         }
+        return true;
     }
 
 }

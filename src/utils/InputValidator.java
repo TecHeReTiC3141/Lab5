@@ -5,8 +5,7 @@ import exceptions.InvalidNameException;
 import exceptions.UnknownCommandException;
 import exceptions.WrongArgumentsException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Set;
 
 /**
 * Класс, содержащий методы для проверки валидности ввода пользователя.
@@ -15,36 +14,14 @@ import java.util.Arrays;
 public class InputValidator {
 
     /**
-     * Список всех возможных команд.
-     */
-    private static final ArrayList<String> ValidCommands = new ArrayList<>(
-            Arrays.asList(
-                    "help",
-                    "info",
-                    "show",
-                    "add",
-                    "update",
-                    "remove_by_id",
-                    "clear",
-                    "save",
-                    "execute_script",
-                    "exit",
-                    "remove_at",
-                    "reorder",
-                    "sort",
-                    "count_greater_than_distance",
-                    "print_ascending",
-                    "print_field_descending_distance"
-            )
-    );
-
-    /**
      * Проверка на валидность введенной команды.
+     *
      * @param command введенная команда
+     * @param validCommands список всех доступных команд, кроме execute_script и exit
      * @throws UnknownCommandException исключение, если команда не найдена
      */
-    public static void checkIsValidCommand(String command) throws UnknownCommandException {
-        if (!ValidCommands.contains(command)) {
+    public static void checkIsValidCommand(String command, Set<String> validCommands) throws UnknownCommandException {
+        if (!command.equals("execute_script") && !command.equals("exit") && !validCommands.contains(command)) {
             throw new UnknownCommandException(command);
         }
     }

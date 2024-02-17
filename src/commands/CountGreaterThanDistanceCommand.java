@@ -27,8 +27,8 @@ public class CountGreaterThanDistanceCommand extends BaseCommand {
             return;
         }
         try {
-            double distance = Double.parseDouble(commandParts[1]);
             InputValidator.checkIfOneArgument(commandParts);
+            double distance = Double.parseDouble(commandParts[1]);
             long count = collection.stream().filter(route -> route.getDistance() > distance).count();
             System.out.printf("Количество элементов, значение поля distance которых больше %s - %s%n", distance, count);
         } catch (WrongArgumentsException e) {

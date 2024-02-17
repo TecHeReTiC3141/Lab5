@@ -24,7 +24,6 @@ public class PrintAscendingCommand extends BaseCommand {
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfNoArguments(commandParts);
-
             if (collection.isEmpty()) {
                 System.out.println("Коллекция пуста");
                 return;
@@ -34,7 +33,6 @@ public class PrintAscendingCommand extends BaseCommand {
                     .forEach(System.out::println);
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
-            return;
         }
 
     }
