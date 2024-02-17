@@ -17,10 +17,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 
 /**
@@ -35,11 +32,12 @@ public abstract class ReadRoute extends BaseCommand {
     /**
      * Метод для чтения маршрута из ввода пользователя
      * (нужно сначала ввести name и distance, затем будут запрошены остальные данные).
+     *
      * @param value строка, содержащая значения начальных полей маршрута
      * @return прочитанный объект класса Route
-     * @throws InvalidNameException если имя маршрута некорректно
+     * @throws InvalidNameException     если имя маршрута некорректно
      * @throws InvalidDistanceException если дистанция маршрута некорректна
-     * @throws WrongArgumentsException если введены некорректные аргументы
+     * @throws WrongArgumentsException  если введены некорректные аргументы
      */
 
     public Route readRoute(String value) throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
@@ -79,6 +77,9 @@ public abstract class ReadRoute extends BaseCommand {
                 break;
             } catch (NumberFormatException e) {
                 System.err.println("Координата X должна быть целым числом");
+            } catch (NoSuchElementException e) {
+                System.err.println("Выход из программы...");
+                System.exit(130);
             }
         }
         while (true) {
@@ -89,6 +90,9 @@ public abstract class ReadRoute extends BaseCommand {
                 break;
             } catch (NumberFormatException e) {
                 System.err.println("Координата Y должна быть целым числом");
+            } catch (NoSuchElementException e) {
+                System.err.println(e.getMessage());
+                System.exit(130);
             }
         }
         while (true) {
@@ -100,6 +104,9 @@ public abstract class ReadRoute extends BaseCommand {
                 break;
             } catch (InvalidNameException e) {
                 System.err.println("Название пункта прибытия не может быть пустым");
+            } catch (NoSuchElementException e) {
+                System.err.println(e.getMessage());
+                System.exit(130);
             }
         }
         while (true) {
@@ -110,6 +117,9 @@ public abstract class ReadRoute extends BaseCommand {
                 break;
             } catch (NumberFormatException e) {
                 System.err.println("Координата должна быть вещественным числом");
+            } catch (NoSuchElementException e) {
+                System.err.println("Выход из программы...");
+                System.exit(130);
             }
         }
         while (true) {
@@ -120,6 +130,9 @@ public abstract class ReadRoute extends BaseCommand {
                 break;
             } catch (NumberFormatException e) {
                 System.err.println("Координата должна быть вещественным числом");
+            } catch (NoSuchElementException e) {
+                System.err.println("Выход из программы...");
+                System.exit(130);
             }
         }
         while (true) {
@@ -130,6 +143,9 @@ public abstract class ReadRoute extends BaseCommand {
                 break;
             } catch (NumberFormatException e) {
                 System.err.println("Координата должна быть вещественным числом");
+            } catch (NoSuchElementException e) {
+                System.err.println("Выход из программы...");
+                System.exit(130);
             }
         }
         boolean toHasName;
@@ -142,6 +158,9 @@ public abstract class ReadRoute extends BaseCommand {
                 break;
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
+            } catch (NoSuchElementException e) {
+                System.err.println("Выход из программы...");
+                System.exit(130);
             }
         }
         if (toHasName) {
@@ -154,6 +173,9 @@ public abstract class ReadRoute extends BaseCommand {
                     break;
                 } catch (InvalidNameException e) {
                     System.err.println("Название пункта прибытия не может быть пустым");
+                } catch (NoSuchElementException e) {
+                    System.err.println("Выход из программы...");
+                    System.exit(130);
                 }
             }
         } else {
@@ -169,6 +191,9 @@ public abstract class ReadRoute extends BaseCommand {
                 break;
             } catch (IllegalArgumentException e) {
                 System.err.println(e.getMessage());
+            } catch (NoSuchElementException e) {
+                System.err.println("Выход из программы...");
+                System.exit(130);
             }
         }
         if (hasFrom) {
@@ -180,6 +205,9 @@ public abstract class ReadRoute extends BaseCommand {
                     break;
                 } catch (NumberFormatException e) {
                     System.err.println("Координата должна быть целым числом");
+                } catch (NoSuchElementException e) {
+                    System.err.println("Выход из программы...");
+                    System.exit(130);
                 }
             }
             while (true) {
@@ -190,6 +218,9 @@ public abstract class ReadRoute extends BaseCommand {
                     break;
                 } catch (NumberFormatException e) {
                     System.err.println("Координата должна быть целым числом");
+                } catch (NoSuchElementException e) {
+                    System.err.println("Выход из программы...");
+                    System.exit(130);
                 }
             }
             while (true) {
@@ -200,6 +231,9 @@ public abstract class ReadRoute extends BaseCommand {
                     break;
                 } catch (NumberFormatException e) {
                     System.err.println("Координата должна быть вещественным числом");
+                } catch (NoSuchElementException e) {
+                    System.err.println("Выход из программы...");
+                    System.exit(130);
                 }
             }
             route.setFrom(locationFrom);
@@ -214,11 +248,12 @@ public abstract class ReadRoute extends BaseCommand {
     /**
      * Метод для чтения маршрута из строки, содержащей все необходимые поля маршрута.
      * Используется при чтении add и update команд, запущенные в execute_script.
+     *
      * @param line строка, содержащая значения полей маршрута
      * @return прочитанный объект класса Route
-     * @throws InvalidNameException если имя маршрута некорректно
-     * @throws InvalidDistanceException если дистанция маршрута некорректна
-     * @throws WrongArgumentsException если введены некорректные аргументы
+     * @throws InvalidNameException              если имя маршрута некорректно
+     * @throws InvalidDistanceException          если дистанция маршрута некорректна
+     * @throws WrongArgumentsException           если введены некорректные аргументы
      * @throws AbsentRequiredParametersException если не хватает обязательных параметров
      */
     public Route parseRoute(String line) throws InvalidNameException, InvalidDistanceException, WrongArgumentsException, AbsentRequiredParametersException {
@@ -305,11 +340,12 @@ public abstract class ReadRoute extends BaseCommand {
     /**
      * Метод для чтения маршрута из XML-файла.
      * Используется для изначального чтения маршрутов из файла из системной переменной DATA_FILE.
+     *
      * @param routeNode узел XML-файла, содержащий информацию о маршруте
      * @return прочитанный объект класса Route
-     * @throws InvalidNameException если имя маршрута некорректно
-     * @throws InvalidDistanceException если дистанция маршрута некорректна
-     * @throws WrongArgumentsException если есть некорректные аргументы
+     * @throws InvalidNameException              если имя маршрута некорректно
+     * @throws InvalidDistanceException          если дистанция маршрута некорректна
+     * @throws WrongArgumentsException           если есть некорректные аргументы
      * @throws AbsentRequiredParametersException если не хватает обязательных параметров
      */
 

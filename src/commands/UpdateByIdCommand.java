@@ -26,9 +26,9 @@ public class UpdateByIdCommand extends ReadRoute {
      */
     public void execute(String[] commandParts, boolean parse) {
         try {
-            Long id = Long.parseLong(commandParts[1]);
-            String value = commandParts[2];
             InputValidator.checkIfTwoArguments(commandParts);
+            long id = Long.parseLong(commandParts[1]);
+            String value = commandParts[2];
             boolean isFound = false;
             for (Route route : collection) {
                 isFound |= route.getId() == id;

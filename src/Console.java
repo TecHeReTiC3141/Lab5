@@ -149,7 +149,12 @@ public class Console {
                         return;
                     }
                 default:
-                    commands.get(commandParts[0]).execute(commandParts);
+                    BaseCommand command = commands.get(commandParts[0]);
+                    if (command.getNeedsParse()) {
+                        commands.get(commandParts[0]).execute(commandParts, depth > 1);
+                    } else {
+                        commands.get(commandParts[0]).execute(commandParts);
+                    }
             }
         } catch (UnknownCommandException e) {
             System.err.println(e.getMessage());

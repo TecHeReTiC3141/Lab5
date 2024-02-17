@@ -59,10 +59,8 @@ public class AddCommand extends ReadRoute {
         } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
                  AbsentRequiredParametersException e) {
             System.err.println(e.getMessage());
-            return;
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println("Должно быть ровно 2 начальных параметра (name и distance)");
-            return;
         }
 
     }
