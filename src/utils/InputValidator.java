@@ -74,14 +74,14 @@ public class InputValidator {
     }
 
     /**
-     * Проверка валидности дистанции (больше 0).
+     * Проверка валидности дистанции (больше 1).
      * @param distance дистанция
      * @return валидная дистанция
      * @throws InvalidDistanceException исключение, если дистанция невалидная
      */
     public static double checkDistance(String distance) throws InvalidDistanceException {
         double d = Double.parseDouble(distance);
-        if (d <= 0d) {
+        if (d <= 1d) {
             throw new InvalidDistanceException();
         }
         return d;

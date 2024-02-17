@@ -15,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -109,8 +110,13 @@ public class Console {
         System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
         Scanner scanner = new Scanner(System.in);
         while (flag) {
-            String line = scanner.nextLine();
-            processCommand(line, 1);
+            try {
+                String line = scanner.nextLine();
+                processCommand(line, 1);
+            } catch (NoSuchElementException e) {
+                System.err.println("Достигнут конец ввода, завершение работы программы...");
+                System.exit(130);
+            }
         }
     }
 
