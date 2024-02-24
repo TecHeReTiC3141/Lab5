@@ -4,9 +4,6 @@ import exceptions.AbsentRequiredParametersException;
 import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import routeClasses.Coordinates;
 import routeClasses.LocationFrom;
 import routeClasses.LocationTo;
@@ -33,42 +30,47 @@ public abstract class ReadRoute extends BaseCommand {
      * Метод для чтения маршрута из ввода пользователя
      * (нужно сначала ввести name и distance, затем будут запрошены остальные данные).
      *
-     * @param value строка, содержащая значения начальных полей маршрута
      * @return прочитанный объект класса Route
      * @throws InvalidNameException     если имя маршрута некорректно
      * @throws InvalidDistanceException если дистанция маршрута некорректна
      * @throws WrongArgumentsException  если введены некорректные аргументы
      */
 
-    public Route readRoute(String value) throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
+    public Route readRoute() throws InvalidNameException, InvalidDistanceException, WrongArgumentsException {
         Route route = new Route();
         LocationTo locationTo = new LocationTo();
         LocationFrom locationFrom = new LocationFrom();
         Coordinates coordinates = new Coordinates();
 
-        String[] initParams = value.trim()
-                .replace("{", "")
-                .replace("}", "")
-                .replace(" ", "")
-                .replace("\"", "").split(",");
-        if (initParams.length != 2) {
-            throw new ArrayIndexOutOfBoundsException("Неверное количество параметров. Введите значение в формате {name=\"Billy\",distance=34.4");
-        }
-        for (String pair : initParams) {
-            String[] keyValue = pair.split("=");
-
-            switch (keyValue[0]) {
-                case "name":
-                    route.setName(InputValidator.checkName(keyValue[1]));
-                    break;
-                case "distance":
-                    route.setDistance(InputValidator.checkDistance(keyValue[1]));
-                    break;
-                default:
-                    throw new WrongArgumentsException("Неверный начальный параметр: " + keyValue[0]);
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            try {
+                System.out.println("Введите name - не пустую строку: ");
+                String line = scanner.nextLine();
+                route.setName(InputValidator.checkName(line));
+                break;
+            } catch (InvalidNameException e) {
+                System.err.println("Поле name должно быть непустой строкой");
+            } catch (NoSuchElementException e) {
+                System.err.println("Выход из программы...");
+                System.exit(130);
             }
         }
-        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            try {
+                System.out.println("Введите distance - вещественное число > 1: ");
+                String line = scanner.nextLine();
+                route.setDistance(InputValidator.checkDistance(line));
+                break;
+            } catch (InvalidDistanceException e) {
+                System.err.println("Поле distance должно быть вещественным числом больше 1");
+            } catch (NumberFormatException e) {
+                System.err.println("Введите вещественное число");
+            } catch (NoSuchElementException e) {
+                System.err.println("Выход из программы...");
+                System.exit(130);
+            }
+        }
         while (true) {
             try {
                 System.out.println("Введите координату X - целое число: ");
@@ -256,6 +258,8 @@ public abstract class ReadRoute extends BaseCommand {
      * @throws WrongArgumentsException           если введены некорректные аргументы
      * @throws AbsentRequiredParametersException если не хватает обязательных параметров
      */
+
+
     public Route parseRoute(String line) throws InvalidNameException, InvalidDistanceException, WrongArgumentsException, AbsentRequiredParametersException {
         String[] pairs = line.trim().replace('{', ' ').replace('}', ' ')
                 .replace("\"", "").replace("'", "").split(",");
@@ -337,89 +341,4 @@ public abstract class ReadRoute extends BaseCommand {
         return route;
     }
 
-    /**
-     * Метод для чтения маршрута из XML-файла.
-     * Используется для изначального чтения маршрутов из файла из системной переменной DATA_FILE.
-     *
-     * @param routeNode узел XML-файла, содержащий информацию о маршруте
-     * @return прочитанный объект класса Route
-     * @throws InvalidNameException              если имя маршрута некорректно
-     * @throws InvalidDistanceException          если дистанция маршрута некорректна
-     * @throws WrongArgumentsException           если есть некорректные аргументы
-     * @throws AbsentRequiredParametersException если не хватает обязательных параметров
-     */
-
-    public Route readFromXML(Node routeNode) throws InvalidNameException, WrongArgumentsException, InvalidDistanceException, AbsentRequiredParametersException {
-        ArrayList<String> requiredParams = new ArrayList<>(
-                List.of("name, distance, coordinates, creationDate, locationTo".split(", "))
-        );
-
-        Route route = new Route();
-        DateTimeFormatter formatter = route.getDateFormat();
-
-        NodeList children = routeNode.getChildNodes();
-        for (int i = 0; i < children.getLength(); ++i) {
-            Node child = children.item(i);
-            NamedNodeMap attributes = child.getAttributes();
-            Node xNode, yNode, zNode;
-            switch (child.getNodeName()) {
-                case "#text":
-                    break;
-                case "id":
-                    route.setId(Long.parseLong(attributes.getNamedItem("value").getNodeValue()));
-                    break;
-                case "name":
-                    route.setName(InputValidator.checkName(attributes.getNamedItem("value").getNodeValue()));
-                    break;
-                case "coordinates":
-                    route.setCoordinates(new Coordinates(
-                            Long.parseLong(attributes.getNamedItem("x").getNodeValue()),
-                            Long.parseLong(attributes.getNamedItem("y").getNodeValue())
-                    ));
-                    break;
-                case "creationDate":
-                    route.setCreationDate(ZonedDateTime.of(LocalDateTime.parse(
-                            attributes.getNamedItem("value").getNodeValue(),
-                            formatter), ZoneId.of("UTC+3")));
-                    break;
-                case "locationFrom":
-                    xNode = attributes.getNamedItem("x");
-                    yNode = attributes.getNamedItem("y");
-                    zNode = attributes.getNamedItem("z");
-                    if (xNode == null || yNode == null || zNode == null) {
-                        break;
-                    }
-                    route.setFrom(new LocationFrom(
-                            Integer.parseInt(xNode.getNodeValue()),
-                            Long.parseLong(yNode.getNodeValue()),
-                            Double.parseDouble(zNode.getNodeValue())));
-                    break;
-                case "locationTo":
-                    xNode = attributes.getNamedItem("x");
-                    yNode = attributes.getNamedItem("y");
-                    zNode = attributes.getNamedItem("z");
-                    Node nameNode = attributes.getNamedItem("name");
-                    if (xNode == null || yNode == null || zNode == null) {
-                        throw new WrongArgumentsException("В поле locationTo не хватает обязательных атрибутов");
-                    }
-                    route.setTo(new LocationTo(
-                            Float.parseFloat(xNode.getNodeValue()),
-                            Float.parseFloat(yNode.getNodeValue()),
-                            Float.parseFloat(zNode.getNodeValue()),
-                            nameNode != null ? nameNode.getNodeValue() : "null"));
-                    break;
-                case "distance":
-                    route.setDistance(InputValidator.checkDistance(attributes.getNamedItem("value").getNodeValue()));
-                    break;
-                default:
-                    throw new WrongArgumentsException("Лишнее поле: " + child.getNodeName());
-
-            }
-            requiredParams.remove(child.getNodeName());
-        }
-        if (!requiredParams.isEmpty()) {
-            throw new AbsentRequiredParametersException("Не хватает обязательных параметров: " + requiredParams);
-        }
-        return route;
-    }
 }

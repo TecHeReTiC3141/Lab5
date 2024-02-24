@@ -26,9 +26,8 @@ public class UpdateByIdCommand extends ReadRoute {
      */
     public void execute(String[] commandParts, boolean parse) {
         try {
-            InputValidator.checkIfTwoArguments(commandParts);
+            InputValidator.checkIfOneArgument(commandParts);
             long id = Long.parseLong(commandParts[1]);
-            String value = commandParts[2];
             boolean isFound = false;
             for (Route route : collection) {
                 isFound |= route.getId() == id;
@@ -37,7 +36,7 @@ public class UpdateByIdCommand extends ReadRoute {
                 System.out.println("Элемент с id " + id + " не найден. Обновление не выполнено.");
                 return;
             }
-            Route newRoute = parse ? parseRoute(value) : readRoute(value);
+            Route newRoute = parse ? parseRoute(commandParts[2]) : readRoute();
             newRoute.setId(id);
             for (Route route : collection) {
                 if (route.getId() == id) {

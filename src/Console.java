@@ -1,12 +1,15 @@
-import commands.AddCommand;
-import commands.BaseCommand;
 import exceptions.*;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import routeClasses.Coordinates;
+import routeClasses.LocationFrom;
+import routeClasses.LocationTo;
 import routeClasses.Route;
+import utils.CommandExecutor;
 import utils.InputValidator;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,10 +17,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
-import java.util.Stack;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * Класс, отвечающий за работу консоли, предоставляющей пользователю доступ к коллекции посредством команд
@@ -26,30 +30,23 @@ import java.util.Stack;
 public class Console {
 
     /**
-     * Map, содержащий все команды, доступные пользователю
-     */
-    private final Map<String, BaseCommand> commands;
-
-    /**
      * Коллекция, с которой работает консоль
      */
     private final Stack<Route> collection;
 
-    /**
-     * Команда, используемая для загрузки начальной коллекции
-     */
-    private final AddCommand AddonLoadingCommand;
+    private final CommandExecutor executor;
+
 
     /**
      * Конструктор класса
      *
      * @param collection коллекция, с которой работает консоль
-     * @param commands   Map, содержащий все команды, доступные пользователю
+     * @param executor   исполнитель команд
      */
-    public Console(Stack<Route> collection, Map<String, BaseCommand> commands) {
+    public Console(Stack<Route> collection, CommandExecutor executor) {
         this.collection = collection;
-        this.commands = commands;
-        AddonLoadingCommand = new AddCommand("add", "only for loading of initial collection", collection);
+        this.executor = executor;
+
     }
 
 
@@ -58,10 +55,92 @@ public class Console {
      */
     private final String dataFile = System.getenv("DATA_FILE");
 
+
     /**
-     * Флаг, указывающий, продолжает ли работать приложение
+     * Метод для чтения маршрута из XML-файла.
+     * Используется для изначального чтения маршрутов из файла из системной переменной DATA_FILE.
+     *
+     * @param routeNode узел XML-файла, содержащий информацию о маршруте
+     * @return прочитанный объект класса Route
+     * @throws InvalidNameException              если имя маршрута некорректно
+     * @throws InvalidDistanceException          если дистанция маршрута некорректна
+     * @throws WrongArgumentsException           если есть некорректные аргументы
+     * @throws AbsentRequiredParametersException если не хватает обязательных параметров
      */
-    private boolean flag = true;
+
+    public Route readFromXML(Node routeNode) throws InvalidNameException, WrongArgumentsException, InvalidDistanceException, AbsentRequiredParametersException {
+        ArrayList<String> requiredParams = new ArrayList<>(
+                List.of("name, distance, coordinates, creationDate, locationTo".split(", "))
+        );
+
+        Route route = new Route();
+        DateTimeFormatter formatter = route.getDateFormat();
+
+        NodeList children = routeNode.getChildNodes();
+        for (int i = 0; i < children.getLength(); ++i) {
+            Node child = children.item(i);
+            NamedNodeMap attributes = child.getAttributes();
+            Node xNode, yNode, zNode;
+            switch (child.getNodeName()) {
+                case "#text":
+                    break;
+                case "id":
+                    route.setId(Long.parseLong(attributes.getNamedItem("value").getNodeValue()));
+                    break;
+                case "name":
+                    route.setName(InputValidator.checkName(attributes.getNamedItem("value").getNodeValue()));
+                    break;
+                case "coordinates":
+                    route.setCoordinates(new Coordinates(
+                            Long.parseLong(attributes.getNamedItem("x").getNodeValue()),
+                            Long.parseLong(attributes.getNamedItem("y").getNodeValue())
+                    ));
+                    break;
+                case "creationDate":
+                    route.setCreationDate(ZonedDateTime.of(LocalDateTime.parse(
+                            attributes.getNamedItem("value").getNodeValue(),
+                            formatter), ZoneId.of("UTC+3")));
+                    break;
+                case "locationFrom":
+                    xNode = attributes.getNamedItem("x");
+                    yNode = attributes.getNamedItem("y");
+                    zNode = attributes.getNamedItem("z");
+                    if (xNode == null || yNode == null || zNode == null) {
+                        break;
+                    }
+                    route.setFrom(new LocationFrom(
+                            Integer.parseInt(xNode.getNodeValue()),
+                            Long.parseLong(yNode.getNodeValue()),
+                            Double.parseDouble(zNode.getNodeValue())));
+                    break;
+                case "locationTo":
+                    xNode = attributes.getNamedItem("x");
+                    yNode = attributes.getNamedItem("y");
+                    zNode = attributes.getNamedItem("z");
+                    Node nameNode = attributes.getNamedItem("name");
+                    if (xNode == null || yNode == null || zNode == null) {
+                        throw new WrongArgumentsException("В поле locationTo не хватает обязательных атрибутов");
+                    }
+                    route.setTo(new LocationTo(
+                            Float.parseFloat(xNode.getNodeValue()),
+                            Float.parseFloat(yNode.getNodeValue()),
+                            Float.parseFloat(zNode.getNodeValue()),
+                            nameNode != null ? nameNode.getNodeValue() : "null"));
+                    break;
+                case "distance":
+                    route.setDistance(InputValidator.checkDistance(attributes.getNamedItem("value").getNodeValue()));
+                    break;
+                default:
+                    throw new WrongArgumentsException("Лишнее поле: " + child.getNodeName());
+
+            }
+            requiredParams.remove(child.getNodeName());
+        }
+        if (!requiredParams.isEmpty()) {
+            throw new AbsentRequiredParametersException("Не хватает обязательных параметров: " + requiredParams);
+        }
+        return route;
+    }
 
     /**
      * Метод, загружающий начальную коллекцию из файла в переменной окружения DATA_FILE
@@ -87,7 +166,19 @@ public class Console {
                 ++lineCount;
                 Node route = routeElements.item(i);
                 try {
-                    AddonLoadingCommand.putToCollection(collection, AddonLoadingCommand.readFromXML(route), true);
+                    Route newRoute = readFromXML(route);
+                    if (newRoute.getId() == 0) {
+                        if (collection.isEmpty()) {
+                            newRoute.setId(1);
+                            continue;
+                        }
+                        long maxId = 0L;
+                        for (Route item : collection) {
+                            maxId = Math.max(maxId, item.getId());
+                        }
+                        newRoute.setId(maxId + 1);
+                    }
+                    collection.push(newRoute);
                 } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException |
                          AbsentRequiredParametersException e) {
                     System.err.printf("Ошибка при чтении записи %s: %s%n", lineCount, e.getMessage());
@@ -109,86 +200,19 @@ public class Console {
         loadInitialCollection();
         System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
         Scanner scanner = new Scanner(System.in);
-        while (flag) {
+        while (true) {
             try {
                 String line = scanner.nextLine();
-                processCommand(line, 1);
+                executor.processCommand(line);
+                System.out.println("-----------------------------------");
             } catch (NoSuchElementException e) {
                 System.err.println("Достигнут конец ввода, завершение работы программы...");
                 System.exit(130);
+            } catch (ExitException e) {
+                System.out.println(e.getMessage());
             }
         }
     }
 
-    /**
-     * Метод, обрабатывающий команду, введенную пользователем
-     *
-     * @param line  строка, содержащая команду
-     * @param depth глубина рекурсии, используется для предотвращения бесконечной рекурсии при вызове execute_script
-     * @return true, если команда была успешно обработана, иначе false
-     * @see BaseCommand#execute(String[])
-     */
-
-    public boolean processCommand(String line, int depth) {
-        if (depth > 1000) {
-            System.out.println("Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя");
-            return false;
-        }
-
-        String[] commandParts = line.trim().split(" ");
-
-        if (commandParts.length == 0) {
-            return true;
-        }
-
-        try {
-            InputValidator.checkIsValidCommand(commandParts[0], commands.keySet());
-            switch (commandParts[0]) {
-                case "execute_script":
-                    try {
-                        InputValidator.checkIfOneArgument(commandParts);
-                        String filename = commandParts[1];
-                        try (FileReader reader = new FileReader(filename)) {
-                            Scanner scanner = new Scanner(reader);
-                            while (scanner.hasNextLine()) {
-                                boolean finished = processCommand(scanner.nextLine(), depth + 1);
-                                if (!finished) {
-                                    System.err.println("Ошибка при выполнении скрипта, проверьте правильность команд " + filename);
-                                    break;
-                                }
-                            }
-                        } catch (IOException e) {
-                            System.err.println("Ошибка при чтении файла: " + e.getMessage());
-                        }
-
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return false;
-                    }
-                case "exit":
-                    try {
-                        InputValidator.checkIfNoArguments(commandParts);
-                        flag = false;
-                        System.out.println("Выход из программы...");
-                        break;
-                    } catch (WrongArgumentsException e) {
-                        System.err.println(e.getMessage());
-                        return false;
-                    }
-                default:
-                    BaseCommand command = commands.get(commandParts[0]);
-                    if (command.getNeedsParse()) {
-                        commands.get(commandParts[0]).execute(commandParts, depth > 1);
-                    } else {
-                        commands.get(commandParts[0]).execute(commandParts);
-                    }
-            }
-        } catch (UnknownCommandException e) {
-            System.err.println(e.getMessage());
-            return false;
-        }
-        return true;
-    }
 
 }

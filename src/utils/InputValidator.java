@@ -21,7 +21,7 @@ public class InputValidator {
      * @throws UnknownCommandException исключение, если команда не найдена
      */
     public static void checkIsValidCommand(String command, Set<String> validCommands) throws UnknownCommandException {
-        if (!command.equals("execute_script") && !command.equals("exit") && !validCommands.contains(command)) {
+        if (!command.equals("execute_script") && !validCommands.contains(command.toLowerCase())) {
             throw new UnknownCommandException(command);
         }
     }
@@ -45,18 +45,6 @@ public class InputValidator {
     public static void checkIfOneArgument(String[] commandParts) throws WrongArgumentsException {
         if (commandParts.length != 2) {
             throw new WrongArgumentsException("Команда %s принимает ровно 1 аргумент".formatted(commandParts[0]));
-        }
-    }
-
-    /**
-     * Проверка на наличие ровно 2 аргументов команды.
-     * @param commandParts массив, содержащий команду и аргументы
-     * @throws WrongArgumentsException исключение, если количество аргументов неверное
-     */
-
-    public static void checkIfTwoArguments(String[] commandParts) throws WrongArgumentsException {
-        if (commandParts.length != 3) {
-            throw new WrongArgumentsException("Команда %s принимает ровно 2 аргумента".formatted(commandParts[0]));
         }
     }
 

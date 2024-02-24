@@ -28,12 +28,11 @@ public class HelpCommand extends BaseCommand {
      */
     public void execute(String[] commandParts) {
         try {
+            System.out.println("Список доступных команд:");
             InputValidator.checkIfNoArguments(commandParts);
             for (BaseCommand command : commands) {
-                System.out.println(command.getName() + " : " + command.getDescription());
+                System.out.println(command.getName() + ": " + command.getDescription());
             }
-            System.out.println("execute_script : считать и исполнить скрипт из указанного файла");
-            System.out.println("exit : завершить программу (без сохранения в файл)");
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         }
