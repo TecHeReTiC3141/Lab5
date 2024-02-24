@@ -33,7 +33,7 @@ public class CommandExecutor {
                 put("exit", new ExitCommand("exit", "вывести значения поля distance в порядке убывания", manager));
             }
         };
-        ExecuteScriptCommand executeScript = new ExecuteScriptCommand("execute_script", "считать и исполнить скрипт из указанного файла", manager, executor);
+        ExecuteScriptCommand executeScript = new ExecuteScriptCommand("execute_script", "считать и исполнить скрипт из указанного файла", manager, this);
         commands.put("execute_script", executeScript);
         HelpCommand help = new HelpCommand("help", "вывести справку по доступным командам", manager);
         help.setCommands(new ArrayList<BaseCommand>(commands.values()));

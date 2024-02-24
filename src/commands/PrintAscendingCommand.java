@@ -22,13 +22,7 @@ public class PrintAscendingCommand extends BaseCommand {
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfNoArguments(commandParts);
-            if (collection.isEmpty()) {
-                System.out.println("Коллекция пуста");
-                return;
-            }
-            collection.stream()
-                    .sorted()
-                    .forEach(System.out::println);
+            manager.printAscendingCommand();
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         }

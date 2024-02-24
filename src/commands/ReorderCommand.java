@@ -1,11 +1,8 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
 import utils.CollectionManager;
 import utils.InputValidator;
-
-import java.util.Stack;
 
 /**
  * Класс, реализующий команду reorder, которая изменяет порядок элементов коллекции на обратный.
@@ -27,15 +24,7 @@ public class ReorderCommand extends BaseCommand {
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfNoArguments(commandParts);
-            Stack<Route> temp = new Stack<>();
-            while (!collection.isEmpty()) {
-                temp.push(collection.pop());
-            }
-
-            for (Route route : temp) {
-                collection.push(route);
-            }
-            System.out.println("Порядок элементов коллекции изменен на обратный");
+            manager.reorder();
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         }

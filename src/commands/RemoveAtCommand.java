@@ -23,8 +23,7 @@ public class RemoveAtCommand extends BaseCommand {
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfOneArgument(commandParts);
-            collection.removeElementAt(Integer.parseInt(commandParts[1]));
-            System.out.println("Элемент успешно удален");
+            manager.removeElementAt(Integer.parseInt(commandParts[1]));
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         } catch (NumberFormatException e) {

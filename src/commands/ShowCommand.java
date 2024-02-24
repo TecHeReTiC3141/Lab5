@@ -1,7 +1,6 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
 import utils.CollectionManager;
 import utils.InputValidator;
 
@@ -24,14 +23,7 @@ public class ShowCommand extends BaseCommand {
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfNoArguments(commandParts);
-            if (collection.isEmpty()) {
-                System.out.println("Коллекция пуста");
-                return;
-            }
-            System.out.println("Содержимое коллекции:");
-            for (Route route : collection) {
-                System.out.println(route);
-            }
+            manager.showCollection();
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         }

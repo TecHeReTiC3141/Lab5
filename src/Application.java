@@ -1,20 +1,23 @@
 import exceptions.ExitException;
+import routeClasses.Route;
 import utils.CollectionManager;
 import utils.CommandExecutor;
+import utils.SystemInConsole;
 
 import java.util.NoSuchElementException;
+import java.util.Stack;
 
 
 public class Application {
 
-    private final Console console;
+    private final SystemInConsole console;
     private final CommandExecutor executor;
     private final CollectionManager manager;
 
-    public Application(Console console, CommandExecutor executor, CollectionManager manager) {
-        this.console = console;
-        this.executor = executor;
-        this.manager = manager;
+    public Application() {
+        this.console = new SystemInConsole();
+        this.manager = new CollectionManager(new Stack<Route>());
+        this.executor = new CommandExecutor(manager);
     }
 
     /**
@@ -30,7 +33,7 @@ public class Application {
             try {
                 String line = console.getLine();
                 executor.processCommand(line);
-                System.out.println("\n-----------------------------------");
+                System.out.println("-----------------------------------\n");
             } catch (NoSuchElementException e) {
                 System.err.println("Достигнут конец ввода, завершение работы программы...");
                 System.exit(130);

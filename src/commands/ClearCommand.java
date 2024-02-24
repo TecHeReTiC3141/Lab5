@@ -23,7 +23,7 @@ public class ClearCommand extends BaseCommand {
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfNoArguments(commandParts);
-            collection.clear();
+            manager.clearCollection();
             System.out.println("Коллекция очищена");
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());

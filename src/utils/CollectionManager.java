@@ -4,27 +4,28 @@ import exceptions.AbsentRequiredParametersException;
 import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import routeClasses.Coordinates;
-import routeClasses.LocationFrom;
-import routeClasses.LocationTo;
-import routeClasses.Route;
+import routeClasses.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.*;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -33,6 +34,11 @@ import java.util.Stack;
  */
 
 public class CollectionManager {
+
+    /**
+     * Дата инициализации коллекции
+     */
+    private final Date initDate = new Date();
 
     private final Stack<Route> collection;
 
@@ -44,7 +50,6 @@ public class CollectionManager {
     public CollectionManager(Stack<Route> collection) {
         this.collection = collection;
     }
-
 
     /**
      * Метод для чтения маршрута из XML-файла.
@@ -180,6 +185,13 @@ public class CollectionManager {
         }
     }
 
+    /**
+     * Метод, возвращающий, пуста ли коллекция
+     */
+    public boolean getIsEmpty() {
+        return collection.isEmpty();
+    }
+
 
     /**
      * Метод, добавляющий route в коллекцию и устанавливающий id элемента при необходимости.
@@ -205,4 +217,193 @@ public class CollectionManager {
         collection.push(route);
         if (!silence) System.out.println("Маршрут успешно добавлен в коллекцию");
     }
+
+    /**
+     * Метод, очищающий коллекцию.
+     */
+    public void clearCollection() {
+        collection.clear();
+    }
+
+    /**
+     *
+     * @param distance
+     * @return
+     */
+    public long countGreaterThanDistance(double distance) {
+        return collection.stream().filter(route -> route.getDistance() > distance).count();
+    }
+
+    public String getCollectionClassName() {
+        return collection.getClass().getName();
+    }
+
+    public Date getInitDate() {
+        return initDate;
+    }
+
+    public int getCollectionSize() {
+        return collection.size();
+    }
+
+    public void printAscendingCommand() {
+        if (collection.isEmpty()) {
+            System.out.println("Коллекция пуста");
+            return;
+        }
+        collection.stream()
+                .sorted()
+                .forEach(System.out::println);
+    }
+
+    public void printDescendingDistance() {
+        if (collection.isEmpty()) {
+            System.out.println("Коллекция пуста");
+            return;
+        }
+        System.out.println("Поля distance в порядке убывания:");
+        collection.stream().sorted(new RouteDistanceComparator()).forEach(r -> System.out.printf("%s - %s%n", r.getId(), r.getDistance()));
+    }
+
+    public void removeElementAt(int index) {
+        if (index < 0 || index >= collection.size()) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        collection.remove(index);
+        System.out.println("Элемент успешно удален");
+    }
+
+    public void removeById(long id) {
+        if (collection.isEmpty()) {
+            System.out.println("Коллекция пуста");
+            return;
+        }
+        boolean removed = collection.removeIf(route -> route.getId() == id);
+        if (removed) {
+            System.out.println("Элемент успешно удален");
+        } else {
+            System.out.println("Элемент с таким id не найден");
+        }
+    }
+
+    public void reorder() {
+        Stack<Route> temp = new Stack<>();
+        while (!collection.isEmpty()) {
+            temp.push(collection.pop());
+        }
+
+        for (Route route : temp) {
+            collection.push(route);
+        }
+        System.out.println("Порядок элементов коллекции изменен на обратный");
+    }
+
+    /**
+     * Метод, преобразующий объект типа Node в строку.
+     *
+     * @param node               объект типа Node
+     * @param omitXmlDeclaration true, если необходимо убрать xml-заголовок
+     * @param prettyPrint        true, если необходимо красиво оформить xml
+     * @return строковое представление объекта типа Node
+     */
+
+    public static String nodeToString(Node node, boolean omitXmlDeclaration, boolean prettyPrint) {
+        if (node == null) {
+            throw new IllegalArgumentException("node is null.");
+        }
+
+        try {
+            node.normalize();
+            XPath xpath = XPathFactory.newInstance().newXPath();
+            XPathExpression expr = xpath.compile("//text()[normalize-space()='']");
+            NodeList nodeList = (NodeList) expr.evaluate(node, XPathConstants.NODESET);
+
+            for (int i = 0; i < nodeList.getLength(); ++i) {
+                Node nd = nodeList.item(i);
+                nd.getParentNode().removeChild(nd);
+            }
+
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+            if (omitXmlDeclaration) {
+                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            }
+
+            if (prettyPrint) {
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            }
+
+            StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(node), new StreamResult(writer));
+            return writer.toString();
+        } catch (TransformerException | XPathExpressionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void addCollectionToRoot(Document document, Element root) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
+            for (Route route : collection) {
+                Element newRouteRoot = document.createElement("Route");
+                route.appendNode(document, newRouteRoot);
+                root.appendChild(newRouteRoot);
+            }
+            System.out.println("Коллекция успешно сохранена в файл " + dataFile);
+            writer.write(nodeToString(document, false, true));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void showCollection() {
+        if (collection.isEmpty()) {
+            System.out.println("Коллекция пуста");
+            return;
+        }
+        System.out.println("Содержимое коллекции:");
+        for (Route route : collection) {
+            System.out.println(route);
+        }
+    }
+
+    public void sortCollection() {
+        ArrayList<Route> routes = new ArrayList<>(collection);
+        routes.sort(Route::compareTo);
+        collection.clear();
+        for (Route route : routes) {
+            collection.push(route);
+        }
+        System.out.println("Коллекция успешно отсортирована");
+    }
+
+    public boolean findElementById(long id) {
+        for (Route route : collection) {
+            if (route.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Метод, обновляющий элемент коллекции по его id, заменяя его другим элементом.
+     *
+     * @param id       id элемента, который нужно обновить
+     * @param newRoute новый элемент
+     */
+    public void updateElementById(long id, Route newRoute) {
+        for (Route route : collection) {
+            if (route.getId() == id) {
+                collection.remove(route);
+                collection.add(newRoute);
+                System.out.println("Элемент с id " + id + " успешно обновлен.");
+                break;
+            }
+        }
+    }
+
 }

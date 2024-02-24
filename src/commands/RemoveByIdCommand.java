@@ -24,7 +24,7 @@ public class RemoveByIdCommand extends BaseCommand {
         try {
             InputValidator.checkIfOneArgument(commandParts);
             long id = Long.parseLong(commandParts[1]);
-            System.out.println("Элемент с id " + id + (collection.removeIf(route -> route.getId() == id) ? " успешно удален" : " не найден"));
+            manager.removeById(id);
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         } catch (NumberFormatException e) {

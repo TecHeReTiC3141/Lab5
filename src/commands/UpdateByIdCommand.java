@@ -27,29 +27,20 @@ public class UpdateByIdCommand extends ReadRoute {
         try {
             InputValidator.checkIfOneArgument(commandParts);
             long id = Long.parseLong(commandParts[1]);
-            boolean isFound = false;
-            for (Route route : collection) {
-                isFound |= route.getId() == id;
-            }
+            boolean isFound = manager.findElementById(id);
             if (!isFound) {
                 System.out.println("Элемент с id " + id + " не найден. Обновление не выполнено.");
                 return;
             }
             Route newRoute = parse ? parseRoute(commandParts[2]) : readRoute();
             newRoute.setId(id);
-            for (Route route : collection) {
-                if (route.getId() == id) {
-                    collection.remove(route);
-                    collection.add(newRoute);
-                    System.out.println("Элемент с id " + id + " успешно обновлен.");
-                    break;
-                }
-            }
+            manager.updateElementById(id, newRoute);
         } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
                  AbsentRequiredParametersException | ArrayIndexOutOfBoundsException e) {
             System.err.println(e.getMessage());
         } catch (NumberFormatException e) {
             System.err.println("ID должен быть целым числом");
+
         }
 
     }

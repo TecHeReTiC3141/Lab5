@@ -1,7 +1,6 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.RouteDistanceComparator;
 import utils.CollectionManager;
 import utils.InputValidator;
 
@@ -26,12 +25,7 @@ public class PrintFieldDescendingDistanceCommand extends BaseCommand {
 
         try {
             InputValidator.checkIfNoArguments(commandParts);
-            if (collection.isEmpty()) {
-                System.out.println("Коллекция пуста.");
-                return;
-            }
-            System.out.println("Поля distance в порядке убывания:");
-            collection.stream().sorted(new RouteDistanceComparator()).forEach(r -> System.out.printf("%s - %s%n", r.getId(), r.getDistance()));
+            manager.printDescendingDistance();
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         }

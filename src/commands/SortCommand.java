@@ -1,11 +1,8 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
 import utils.CollectionManager;
 import utils.InputValidator;
-
-import java.util.ArrayList;
 
 /**
  * Класс, реализующий команду sort, которая сортирует коллекцию по возрастанию в естественном порядке.
@@ -25,13 +22,7 @@ public class SortCommand extends BaseCommand {
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfNoArguments(commandParts);
-            ArrayList<Route> routes = new ArrayList<>(collection);
-            routes.sort(Route::compareTo);
-            collection.clear();
-            for (Route route : routes) {
-                collection.push(route);
-            }
-            System.out.println("Коллекция успешно отсортирована");
+            manager.sortCollection();
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         }

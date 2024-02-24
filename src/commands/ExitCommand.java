@@ -11,7 +11,7 @@ public class ExitCommand extends BaseCommand {
      *
      * @param name        название команды
      * @param description описание команды
-     * @param collection  коллекция, над которой производится действие
+     * @param manager   менеджер коллекции
      */
     public ExitCommand(String name, String description, CollectionManager manager) {
         super(name, description, manager, false);
