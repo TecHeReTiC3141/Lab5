@@ -2,6 +2,7 @@ package commands;
 
 import exceptions.WrongArgumentsException;
 import routeClasses.Route;
+import utils.CollectionManager;
 import utils.InputValidator;
 
 import java.util.Stack;
@@ -13,8 +14,8 @@ import java.util.Stack;
 public class ReorderCommand extends BaseCommand {
 
 
-    public ReorderCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, false);
+    public ReorderCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager, false);
     }
 
     /**

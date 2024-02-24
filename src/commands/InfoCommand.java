@@ -1,11 +1,10 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
+import utils.CollectionManager;
 import utils.InputValidator;
 
 import java.util.Date;
-import java.util.Stack;
 
 /**
  * Класс, реализующий команду info, выводящую информацию о коллекции (тип, дата инициализации, количество элементов).
@@ -19,8 +18,8 @@ public class InfoCommand extends BaseCommand {
     private final Date initDate = new Date();
 
 
-    public InfoCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, false);
+    public InfoCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager, false);
     }
 
     /**

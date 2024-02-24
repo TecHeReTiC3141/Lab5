@@ -1,10 +1,8 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
+import utils.CollectionManager;
 import utils.InputValidator;
-
-import java.util.Stack;
 
 /**
  * Класс, реализующий команду remove_at, удаляющую элемент коллекции по его индексу.
@@ -12,8 +10,8 @@ import java.util.Stack;
 
 public class RemoveAtCommand extends BaseCommand {
 
-    public RemoveAtCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, false);
+    public RemoveAtCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager, false);
     }
 
     /**

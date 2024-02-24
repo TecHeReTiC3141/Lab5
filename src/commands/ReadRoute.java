@@ -8,13 +8,17 @@ import routeClasses.Coordinates;
 import routeClasses.LocationFrom;
 import routeClasses.LocationTo;
 import routeClasses.Route;
+import utils.CollectionManager;
 import utils.InputValidator;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 
 /**
@@ -22,8 +26,8 @@ import java.util.*;
  */
 public abstract class ReadRoute extends BaseCommand {
 
-    public ReadRoute(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, true);
+    public ReadRoute(String name, String description, CollectionManager manager) {
+        super(name, description, manager, true);
     }
 
     /**

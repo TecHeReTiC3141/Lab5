@@ -1,9 +1,7 @@
 package commands;
 
 import exceptions.ExitException;
-import routeClasses.Route;
-
-import java.util.Stack;
+import utils.CollectionManager;
 
 public class ExitCommand extends BaseCommand {
 
@@ -15,8 +13,8 @@ public class ExitCommand extends BaseCommand {
      * @param description описание команды
      * @param collection  коллекция, над которой производится действие
      */
-    public ExitCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, false);
+    public ExitCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager, false);
     }
 
     public void execute(String[] commandParts) {

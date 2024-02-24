@@ -1,18 +1,16 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
+import utils.CollectionManager;
 import utils.InputValidator;
-
-import java.util.Stack;
 
 /**
  * Класс, реализующий команду count_greater_than_distance, которая выводит количество элементов со значением поля distance больше заданного.
  */
 public class CountGreaterThanDistanceCommand extends BaseCommand {
 
-    public CountGreaterThanDistanceCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, false);
+    public CountGreaterThanDistanceCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager, false);
     }
 
     /**

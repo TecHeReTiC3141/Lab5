@@ -1,11 +1,10 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
+import utils.CollectionManager;
 import utils.InputValidator;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 /**
  * Класс, реализующий команду help, которая выводит справку по доступным командам.
@@ -15,8 +14,8 @@ public class HelpCommand extends BaseCommand {
     ArrayList<BaseCommand> commands = new ArrayList<>();
 
 
-    public HelpCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, false);
+    public HelpCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager, false);
     }
 
     public void setCommands(ArrayList<BaseCommand> commands) {

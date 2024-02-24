@@ -6,6 +6,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import routeClasses.Route;
+import utils.CollectionManager;
 import utils.InputValidator;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -22,7 +23,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Stack;
 
 /**
  * Класс, реализующий команду save, которая сохраняет коллекцию в файл.
@@ -32,8 +32,8 @@ public class SaveCommand extends BaseCommand {
 
     private final String dataFile = System.getenv("DATA_FILE");
 
-    public SaveCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, false);
+    public SaveCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager, false);
     }
 
     /**

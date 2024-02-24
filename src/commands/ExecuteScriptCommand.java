@@ -1,21 +1,20 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
+import utils.CollectionManager;
 import utils.CommandExecutor;
 import utils.InputValidator;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.Stack;
 
 public class ExecuteScriptCommand extends BaseCommand {
 
     private final CommandExecutor executor;
 
-    public ExecuteScriptCommand(String name, String description, Stack<Route> collection, CommandExecutor executor) {
-        super(name, description, collection, false);
+    public ExecuteScriptCommand(String name, String description, CollectionManager manager, CommandExecutor executor) {
+        super(name, description, manager, false);
         this.executor = executor;
     }
 

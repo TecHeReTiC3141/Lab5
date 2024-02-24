@@ -1,11 +1,9 @@
 package commands;
 
 import exceptions.WrongArgumentsException;
-import routeClasses.Route;
 import routeClasses.RouteDistanceComparator;
+import utils.CollectionManager;
 import utils.InputValidator;
-
-import java.util.Stack;
 
 /**
  * Класс, реализующий команду print_field_descending_distance,
@@ -14,8 +12,8 @@ import java.util.Stack;
 
 public class PrintFieldDescendingDistanceCommand extends BaseCommand {
 
-    public PrintFieldDescendingDistanceCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection, false);
+    public PrintFieldDescendingDistanceCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager, false);
     }
 
     /**

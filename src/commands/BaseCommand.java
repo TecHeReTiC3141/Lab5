@@ -1,8 +1,6 @@
 package commands;
 
-import routeClasses.Route;
-
-import java.util.Stack;
+import utils.CollectionManager;
 
 /**
  * Абстрактный класс, реализующий интерфейс ICommand.
@@ -21,7 +19,7 @@ public abstract class BaseCommand implements ICommand {
     /**
      * The Collection.
      */
-    protected Stack<Route> collection;
+    protected CollectionManager manager;
 
     /**
      * The Needs parse.
@@ -34,14 +32,14 @@ public abstract class BaseCommand implements ICommand {
      *
      * @param name        название команды
      * @param description описание команды
-     * @param collection  коллекция, над которой производится действие
+     * @param manager   менеджер коллекции
      * @param needsParse  флаг, указывающий, нужно ли парсить аргументы команды
      */
-    public BaseCommand(String name, String description, Stack<Route> collection, boolean needsParse) {
+    public BaseCommand(String name, String description, CollectionManager manager, boolean needsParse) {
         this.name = name;
         this.description = description;
-        this.collection = collection;
         this.needsParse = needsParse;
+        this.manager = manager;
     }
 
     public String getDescription() {

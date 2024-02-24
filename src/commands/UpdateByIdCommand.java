@@ -5,9 +5,8 @@ import exceptions.InvalidDistanceException;
 import exceptions.InvalidNameException;
 import exceptions.WrongArgumentsException;
 import routeClasses.Route;
+import utils.CollectionManager;
 import utils.InputValidator;
-
-import java.util.Stack;
 
 /**
  * Класс, объекты которого обновляют элемент коллекции по его id, заменяя его другим элементом.
@@ -15,8 +14,8 @@ import java.util.Stack;
 
 public class UpdateByIdCommand extends ReadRoute {
 
-    public UpdateByIdCommand(String name, String description, Stack<Route> collection) {
-        super(name, description, collection);
+    public UpdateByIdCommand(String name, String description, CollectionManager manager) {
+        super(name, description, manager);
     }
 
     /**
