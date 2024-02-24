@@ -226,26 +226,44 @@ public class CollectionManager {
     }
 
     /**
-     *
-     * @param distance
-     * @return
+     * Метод, возвращающий количество элементов коллекции, значение поля distance которых больше заданного.
+     * @param distance значение поля distance
+     * @return количество элементов коллекции, значение поля distance которых больше заданного
      */
     public long countGreaterThanDistance(double distance) {
         return collection.stream().filter(route -> route.getDistance() > distance).count();
     }
 
+    /**
+     * Метод, возвращающий название класса коллекции.
+     * @return название класса коллекции
+     */
     public String getCollectionClassName() {
         return collection.getClass().getName();
     }
+
+    /**
+     * Метод, возвращающий дату инициализации коллекции.
+     * @return дата инициализации коллекции
+     */
 
     public Date getInitDate() {
         return initDate;
     }
 
+    /**
+     * Метод, возвращающий количество элементов в коллекции.
+     * @return количество элементов в коллекции
+     */
+
     public int getCollectionSize() {
         return collection.size();
     }
 
+    /**
+     * Метод, выводящий элементы коллекции в порядке возрастания.
+     *
+     */
     public void printAscendingCommand() {
         if (collection.isEmpty()) {
             System.out.println("Коллекция пуста");
@@ -256,6 +274,9 @@ public class CollectionManager {
                 .forEach(System.out::println);
     }
 
+    /**
+     * Метод, выводящий поле distance элементов коллекции в порядке убывания.
+     */
     public void printDescendingDistance() {
         if (collection.isEmpty()) {
             System.out.println("Коллекция пуста");
@@ -265,6 +286,11 @@ public class CollectionManager {
         collection.stream().sorted(new RouteDistanceComparator()).forEach(r -> System.out.printf("%s - %s%n", r.getId(), r.getDistance()));
     }
 
+    /**
+     * Метод, удаляющий элемент коллекции по его индексу в коллекции.
+     * @param index индекс элемента, который нужно удалить
+     */
+
     public void removeElementAt(int index) {
         if (index < 0 || index >= collection.size()) {
             throw new ArrayIndexOutOfBoundsException();
@@ -272,6 +298,11 @@ public class CollectionManager {
         collection.remove(index);
         System.out.println("Элемент успешно удален");
     }
+
+    /**
+     * Метод, удаляющий элемент коллекции по его id.
+     * @param id id элемента, который нужно удалить
+     */
 
     public void removeById(long id) {
         if (collection.isEmpty()) {
@@ -286,6 +317,9 @@ public class CollectionManager {
         }
     }
 
+    /**
+     * Метод, меняющий порядок элементов коллекции на обратный.
+     */
     public void reorder() {
         Stack<Route> temp = new Stack<>();
         while (!collection.isEmpty()) {
@@ -344,6 +378,12 @@ public class CollectionManager {
     }
 
 
+    /**
+     * Метод, добавляющий коллекцию в корень xml документа.
+     *
+     * @param document объект типа Document
+     * @param root     корневой элемент документа
+     */
     public void addCollectionToRoot(Document document, Element root) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
             for (Route route : collection) {
@@ -358,6 +398,10 @@ public class CollectionManager {
         }
     }
 
+    /**
+     * Метод, выводящий коллекцию.
+     */
+
     public void showCollection() {
         if (collection.isEmpty()) {
             System.out.println("Коллекция пуста");
@@ -369,6 +413,9 @@ public class CollectionManager {
         }
     }
 
+    /**
+     * Метод, сортирующий коллекцию в естественном порядке.
+     */
     public void sortCollection() {
         ArrayList<Route> routes = new ArrayList<>(collection);
         routes.sort(Route::compareTo);
@@ -378,6 +425,12 @@ public class CollectionManager {
         }
         System.out.println("Коллекция успешно отсортирована");
     }
+
+    /**
+     * Метод, проверяющий, есть ли элемент с данным id в коллекции.
+     * @param id id искомого элемента
+     * @return true, если элемент найден, иначе - false
+     */
 
     public boolean findElementById(long id) {
         for (Route route : collection) {

@@ -27,7 +27,11 @@ public class AddCommand extends ReadRoute {
 
     public void execute(String[] commandParts, boolean parse) {
         try {
-            InputValidator.checkIfNoArguments(commandParts);
+            if (parse) {
+                InputValidator.checkIfOneArgument(commandParts);
+            } else {
+                InputValidator.checkIfNoArguments(commandParts);
+            }
             Route route = parse ? parseRoute(commandParts[1]) : readRoute();
             manager.putToCollection(route, false);
         } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |

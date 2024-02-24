@@ -49,6 +49,17 @@ public class InputValidator {
     }
 
     /**
+     * Проверка на наличие ровно 2 аргументов команды.
+     * @param commandParts массив, содержащий команду и аргументы
+     * @throws WrongArgumentsException исключение, если количество аргументов неверное
+     */
+    public static void checkIfTwoArguments(String[] commandParts) throws WrongArgumentsException {
+        if (commandParts.length != 3) {
+            throw new WrongArgumentsException("Команда %s принимает ровно 2 аргумента".formatted(commandParts[0]));
+        }
+    }
+
+    /**
      * Проверка валидности имени (не пустое).
      * @param name имя
      * @return валидное имя

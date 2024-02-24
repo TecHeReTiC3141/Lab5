@@ -3,11 +3,11 @@ package commands;
 import exceptions.WrongArgumentsException;
 import utils.CollectionManager;
 import utils.CommandExecutor;
+import utils.FileConsole;
 import utils.InputValidator;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class ExecuteScriptCommand extends BaseCommand {
 
@@ -23,10 +23,10 @@ public class ExecuteScriptCommand extends BaseCommand {
             InputValidator.checkIfOneArgument(commandParts);
             String filename = commandParts[1];
             try (FileReader reader = new FileReader(filename)) {
-                Scanner scanner = new Scanner(reader);
+                FileConsole console = new FileConsole(reader);
                 executor.setDepth(executor.getDepth() + 1);
-                while (scanner.hasNextLine()) {
-                    boolean finished = executor.processCommand(scanner.nextLine());
+                while (console.hasNextLine()) {
+                    boolean finished = executor.processCommand(console.getLine());
                     if (!finished) {
                         System.err.println("Ошибка при выполнении скрипта, проверьте правильность команд " + filename);
                         break;

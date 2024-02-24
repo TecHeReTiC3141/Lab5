@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Класс, запускающий команды, введенные пользователем
+ */
+
 public class CommandExecutor {
+
     /**
      * Map, содержащий все команды, доступные пользователю
      */
-
     private final Map<String, BaseCommand> commands;
 
     public CommandExecutor(CollectionManager manager) {
