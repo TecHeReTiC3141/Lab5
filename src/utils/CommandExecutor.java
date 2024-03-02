@@ -32,9 +32,9 @@ public class CommandExecutor {
                 put("save", new SaveCommand("save", "сохранить коллекцию в файл", manager));
                 put("sort", new SortCommand("sort", "отсортировать коллекцию в порядке убывания", manager));
                 put("count_greater_than_distance", new CountGreaterThanDistanceCommand("count_greater_than_distance distance", "вывести количество элементов, значение поля distance которых больше заданного", manager));
-                put("print_ascending", new PrintAscendingCommand("print_ascending", "вывести значения поля distance в порядке возрастания", manager));
+                put("print_ascending", new PrintAscendingCommand("print_ascending", "вывести элементы коллекции в естественном порядке возрастания", manager));
                 put("print_field_descending_distance", new PrintFieldDescendingDistanceCommand("print_field_descending_distance", "вывести значения поля distance в порядке убывания", manager));
-                put("exit", new ExitCommand("exit", "вывести значения поля distance в порядке убывания", manager));
+                put("exit", new ExitCommand("exit", "Выйти из программы (без сохранения коллекции в файл)", manager));
             }
         };
         ExecuteScriptCommand executeScript = new ExecuteScriptCommand("execute_script", "считать и исполнить скрипт из указанного файла", manager, this);
@@ -87,7 +87,6 @@ public class CommandExecutor {
             } else {
                 command.execute(commandParts);
             }
-
         } catch (UnknownCommandException e) {
             System.err.println(e.getMessage());
             return false;

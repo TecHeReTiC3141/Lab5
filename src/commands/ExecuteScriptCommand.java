@@ -9,8 +9,15 @@ import utils.InputValidator;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * Класс, реализующий команду execute_script, считывающую и исполняющую скрипт из указанного файла
+ */
+
 public class ExecuteScriptCommand extends BaseCommand {
 
+    /**
+     * Объект, выполняющий команды, с помощью которого будет выполнены команды скрипта
+     */
     private final CommandExecutor executor;
 
     public ExecuteScriptCommand(String name, String description, CollectionManager manager, CommandExecutor executor) {
@@ -18,6 +25,11 @@ public class ExecuteScriptCommand extends BaseCommand {
         this.executor = executor;
     }
 
+    /**
+     * Метод, реализующий логику команды execute_script
+     *
+     * @param commandParts название команды и ее аргументы (файл, из которого нужно считать и исполнить скрипт)
+     */
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfOneArgument(commandParts);
@@ -32,12 +44,14 @@ public class ExecuteScriptCommand extends BaseCommand {
                         break;
                     }
                 }
+                executor.setDepth(executor.getDepth() - 1);
             } catch (IOException e) {
                 System.err.println("Ошибка при чтении файла: " + e.getMessage());
             }
 
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
-        };
+        }
+        ;
     }
 }

@@ -7,11 +7,25 @@ import utils.SystemInConsole;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-
+/**
+ * Класс, содержащий все компоненты консольного приложение и метод run, который запускает консольное приложение.
+ */
 public class Application {
 
+
+    /**
+     * Консоль, с помощью которой осуществляется ввод команд
+     */
     private final SystemInConsole console;
+
+    /**
+     * Обработчик команд
+     */
     private final CommandExecutor executor;
+
+    /**
+     * Менеджер коллекции
+     */
     private final CollectionManager manager;
 
     public Application() {
@@ -39,6 +53,7 @@ public class Application {
                 System.exit(130);
             } catch (ExitException e) {
                 System.out.println(e.getMessage());
+                break;
             }
         }
     }

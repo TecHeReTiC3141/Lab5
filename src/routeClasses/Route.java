@@ -190,10 +190,11 @@ public class Route implements Comparable<Route> {
      */
     public String showValues() {
         return "id=%s,name=%s,coordinatesX=%s,coordinatesY=%s,creationDate=%s,toX=%s,toY=%s,toZ=%s,toName=%s,distance=%s".formatted(
-                this.getId(), this.getName(), this.getCoordinates().getX(), this.getCoordinates().getY(),
-                this.getCreationDate().format(dateFormat), this.getTo().getX(), this.getTo().getY(), this.getTo().getZ(), this.getTo().getName(), this.getDistance())
-                + (this.getFrom() == null ? "" : ",fromX=%s,fromY=%s,fromZ=%s".formatted(this.getFrom().getX(),
-                this.getFrom().getY(), this.getFrom().getZ()));
+                getId(), getName(), getCoordinates().getX(), getCoordinates().getY(),
+                getCreationDate().format(dateFormat), getTo().getX(), getTo().getY(), getTo().getZ(),
+                (getTo().getName() == null) ? "null" : getTo().getName(), getDistance())
+                + (getFrom() == null ? "" : ",fromX=%s,fromY=%s,fromZ=%s".formatted(getFrom().getX(),
+                getFrom().getY(), getFrom().getZ()));
     }
 
     public String toString() {

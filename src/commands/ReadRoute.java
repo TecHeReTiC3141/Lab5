@@ -103,20 +103,6 @@ public abstract class ReadRoute extends BaseCommand {
         }
         while (true) {
             try {
-                System.out.println("Введите название пункта прибытия (To): ");
-                String line = scanner.nextLine();
-                InputValidator.checkName(line);
-                locationTo.setName(line);
-                break;
-            } catch (InvalidNameException e) {
-                System.err.println("Название пункта прибытия не может быть пустым");
-            } catch (NoSuchElementException e) {
-                System.err.println(e.getMessage());
-                System.exit(130);
-            }
-        }
-        while (true) {
-            try {
                 System.out.println("Введите координату X пункта прибытия (To) - вещественное число: ");
                 String line = scanner.nextLine();
                 locationTo.setX(Float.parseFloat(line));
@@ -154,39 +140,16 @@ public abstract class ReadRoute extends BaseCommand {
                 System.exit(130);
             }
         }
-        boolean toHasName;
-        System.out.println("Есть ли название пункта прибытия (To)? (yes/no)");
-        while (true) {
-            try {
-                String line = scanner.nextLine().trim().toLowerCase();
-                InputValidator.checkIfYesOrNo(line);
-                toHasName = line.equals("yes");
-                break;
-            } catch (IllegalArgumentException e) {
-                System.err.println(e.getMessage());
-            } catch (NoSuchElementException e) {
-                System.err.println("Выход из программы...");
-                System.exit(130);
-            }
+
+        try {
+            System.out.println("Введите название пункта отправления (возможно, пустая строка): ");
+            String line = scanner.nextLine().trim();
+            locationTo.setName(line.isEmpty() ? null : line);
+        } catch (NoSuchElementException e) {
+            System.err.println("Выход из программы...");
+            System.exit(130);
         }
-        if (toHasName) {
-            while (true) {
-                try {
-                    System.out.println("Введите название пункта отправления: ");
-                    String line = scanner.nextLine().trim();
-                    InputValidator.checkName(line);
-                    locationTo.setName(line);
-                    break;
-                } catch (InvalidNameException e) {
-                    System.err.println("Название пункта прибытия не может быть пустым");
-                } catch (NoSuchElementException e) {
-                    System.err.println("Выход из программы...");
-                    System.exit(130);
-                }
-            }
-        } else {
-            locationTo.setName("null");
-        }
+
         boolean hasFrom;
         System.out.println("Будет ли у маршрута пункт отправления (From)? (yes/no)");
         while (true) {

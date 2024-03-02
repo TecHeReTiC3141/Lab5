@@ -196,8 +196,8 @@ public class CollectionManager {
     /**
      * Метод, добавляющий route в коллекцию и устанавливающий id элемента при необходимости.
      *
-     * @param route      элемент, который нужно добавить
-     * @param silence    флаг, указывающий, нужно ли выводить сообщение о добавлении элемента
+     * @param route   элемент, который нужно добавить
+     * @param silence флаг, указывающий, нужно ли выводить сообщение о добавлении элемента
      */
 
     public void putToCollection(Route route, boolean silence) {
@@ -227,6 +227,7 @@ public class CollectionManager {
 
     /**
      * Метод, возвращающий количество элементов коллекции, значение поля distance которых больше заданного.
+     *
      * @param distance значение поля distance
      * @return количество элементов коллекции, значение поля distance которых больше заданного
      */
@@ -236,6 +237,7 @@ public class CollectionManager {
 
     /**
      * Метод, возвращающий название класса коллекции.
+     *
      * @return название класса коллекции
      */
     public String getCollectionClassName() {
@@ -244,6 +246,7 @@ public class CollectionManager {
 
     /**
      * Метод, возвращающий дату инициализации коллекции.
+     *
      * @return дата инициализации коллекции
      */
 
@@ -253,6 +256,7 @@ public class CollectionManager {
 
     /**
      * Метод, возвращающий количество элементов в коллекции.
+     *
      * @return количество элементов в коллекции
      */
 
@@ -262,7 +266,6 @@ public class CollectionManager {
 
     /**
      * Метод, выводящий элементы коллекции в порядке возрастания.
-     *
      */
     public void printAscendingCommand() {
         if (collection.isEmpty()) {
@@ -288,6 +291,7 @@ public class CollectionManager {
 
     /**
      * Метод, удаляющий элемент коллекции по его индексу в коллекции.
+     *
      * @param index индекс элемента, который нужно удалить
      */
 
@@ -301,6 +305,7 @@ public class CollectionManager {
 
     /**
      * Метод, удаляющий элемент коллекции по его id.
+     *
      * @param id id элемента, который нужно удалить
      */
 
@@ -428,6 +433,7 @@ public class CollectionManager {
 
     /**
      * Метод, проверяющий, есть ли элемент с данным id в коллекции.
+     *
      * @param id id искомого элемента
      * @return true, если элемент найден, иначе - false
      */
