@@ -11,8 +11,10 @@ import java.util.ArrayList;
  */
 public class HelpCommand extends BaseCommand {
 
+    /**
+     * Список команд для справки
+     */
     ArrayList<BaseCommand> commands = new ArrayList<>();
-
 
     public HelpCommand(String name, String description, CollectionManager manager) {
         super(name, description, manager, false);

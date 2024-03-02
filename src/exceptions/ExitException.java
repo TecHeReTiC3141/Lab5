@@ -1,5 +1,8 @@
 package exceptions;
 
+/**
+ * Исключение, выбрасываемое при выходе из программы
+ */
 public class ExitException extends RuntimeException {
 
     public ExitException() {

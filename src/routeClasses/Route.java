@@ -203,7 +203,8 @@ public class Route implements Comparable<Route> {
 
     /**
      * Get xml representation of Route.
-     *
+     * @param document the document
+     * @param root the root element of the document
      */
     public void appendNode(Document document, Element root) {
         Element id = document.createElement("id");

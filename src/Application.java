@@ -28,6 +28,9 @@ public class Application {
      */
     private final CollectionManager manager;
 
+    /**
+     * Конструктор приложения
+     */
     public Application() {
         this.console = new SystemInConsole();
         this.manager = new CollectionManager(new Stack<Route>());

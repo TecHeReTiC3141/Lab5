@@ -3,6 +3,10 @@ package commands;
 import exceptions.ExitException;
 import utils.CollectionManager;
 
+/**
+ * Класс команды exit, завершающей программу.
+ */
+
 public class ExitCommand extends BaseCommand {
 
 
@@ -17,9 +21,12 @@ public class ExitCommand extends BaseCommand {
         super(name, description, manager, false);
     }
 
+    /**
+     * Метод, реализующий логику команды exit
+     * @param commandParts название команды и ее аргументы
+     */
     public void execute(String[] commandParts) {
         throw new ExitException();
     }
-
 
 }
