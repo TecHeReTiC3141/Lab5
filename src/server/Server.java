@@ -5,10 +5,9 @@ import routeClasses.Route;
 import utils.CollectionManager;
 import utils.CommandExecutor;
 
-import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -28,6 +27,7 @@ public class Server {
      * Менеджер коллекции
      */
     private final CollectionManager manager;
+    private final int port = 1234;
 
     /**
      * Конструктор приложения
@@ -38,7 +38,6 @@ public class Server {
     }
 
     public void run() throws IOException, ClassNotFoundException {
-        int port = 1234;
 
         InetSocketAddress address = new InetSocketAddress(port); // создаем адрес сокета (IP-адрес и порт)
 
@@ -58,19 +57,24 @@ public class Server {
             while (iter.hasNext()) {
 
                 SelectionKey key = iter.next();
-
+                iter.remove();
                 if (key.isAcceptable()) {
 
                     ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel(); // используется для доступа к серверному каналу
                     SocketChannel client = serverChannel.accept(); // позволяет вашему серверу принять новое входящее соединение и дает вам возможность взаимодействовать с клиентом, используя этот SocketChannel
-                    channel.configureBlocking(false); // неблокирующий режим
-                    clientDataMap.put(client, new StringBuilder());
-                    client.register(selector, SelectionKey.OP_READ);
+                    System.out.println("Connection accepted from " + client);
+                    client.configureBlocking(false); // неблокирующий режим
+                    client.register(key.selector(), SelectionKey.OP_READ);
                 } else if (key.isReadable()) {
                     System.out.println("Reading...");
 
                     SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
-                    ObjectInputStream fromClient = new ObjectInputStream(client.socket().getInputStream());
+                    client.configureBlocking(false); // неблокирующий режим
+
+                    ByteBuffer fromClientBuffer = ByteBuffer.allocate(4096);
+                    client.read(fromClientBuffer);
+
+                    ObjectInputStream fromClient = new ObjectInputStream(new ByteArrayInputStream(fromClientBuffer.array()));
 
                     Request request = (Request) fromClient.readObject();
 
@@ -95,20 +99,20 @@ public class Server {
                     System.out.println(reader.readLine());
                     */
 
-                    client.register(selector, SelectionKey.OP_WRITE);
+                    client.register(key.selector(), SelectionKey.OP_WRITE);
                 } else if (key.isWritable()) {
                     System.out.println("Writing...");
                     SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
-                    BufferedWriter toClient = new BufferedWriter(new OutputStreamWriter(client.socket().getOutputStream()));
-                    toClient.write("Data received and processed");
+                    client.configureBlocking(false); // неблокирующий режим
+                    ByteBuffer buffer = ByteBuffer.allocate(4096);
+                    buffer.put("Data received and processed".getBytes());
+                    client.write(buffer);
                     StringBuilder dataToSend = clientDataMap.get(client);
-//                    ByteBuffer buffer = ByteBuffer.wrap((dataToSend.toString() + " proceed").getBytes());
 //                    client.write(buffer);
 //                    System.out.println("Data sent to " + client.getRemoteAddress() + ": " + dataToSend);
 //                    dataToSend.setLength(0);
-                    client.register(selector, SelectionKey.OP_READ);
+                    client.register(key.selector(), SelectionKey.OP_READ);
                 }
-                iter.remove();
             }
 
 

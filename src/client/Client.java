@@ -5,11 +5,11 @@ import exceptions.ExitException;
 import exceptions.UnknownCommandException;
 import utils.SystemInConsole;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.*;
 
@@ -47,8 +47,8 @@ public class Client {
         try (SocketChannel socketChannel = SocketChannel.open();) {
             socketChannel.connect(new InetSocketAddress("localhost", port));
             System.out.println("Client Socket connected");
-            BufferedReader fromServer = new BufferedReader(new InputStreamReader(socketChannel.socket().getInputStream()));
-            ObjectOutputStream toServer = new ObjectOutputStream(socketChannel.socket().getOutputStream());
+            ByteArrayOutputStream bais = new ByteArrayOutputStream();
+            ObjectOutputStream toServer = new ObjectOutputStream(bais);
 
             SystemInConsole sc = new SystemInConsole();
             System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
@@ -66,12 +66,15 @@ public class Client {
                 try {
                     BaseValidator.checkIsValidCommand(commandName, validators.keySet());
                     Request request = validators.get(commandName).validate(commandName, commandParts.toArray(new String[0]));
+                    System.out.println(request);
 
                     toServer.writeObject(request);
-
+                    socketChannel.write(ByteBuffer.wrap(bais.toByteArray()));
 
                     // Receive response from the server
-                    String response = fromServer.readLine();
+                    ByteBuffer fromServer = ByteBuffer.allocate(1024);
+                    socketChannel.read(fromServer);
+                    String response = new String(fromServer.array()).trim();
 
 
                     // Display the response received from the server

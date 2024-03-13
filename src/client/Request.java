@@ -3,6 +3,7 @@ package client;
 import routeClasses.Route;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class Request implements Serializable {
 
@@ -28,5 +29,13 @@ public class Request implements Serializable {
 
     public Route getRoute() {
         return route;
+    }
+
+    public String toString() {
+        return "Request{" +
+                "command='" + command + '\'' +
+                ", args=" + Arrays.toString(args) +
+                ", route=" + route +
+                '}';
     }
 }

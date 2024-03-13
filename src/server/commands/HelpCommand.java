@@ -1,8 +1,6 @@
 package server.commands;
 
-import exceptions.WrongArgumentsException;
 import utils.CollectionManager;
-import utils.InputValidator;
 
 import java.util.ArrayList;
 
@@ -28,15 +26,9 @@ public class HelpCommand extends BaseCommand {
      * Main method.
      */
     public void execute(String[] commandParts) {
-        try {
-            InputValidator.checkIfNoArguments(commandParts);
-            System.out.println("Список доступных команд:");
-            for (BaseCommand command : commands) {
-                System.out.println(command.getName() + ": " + command.getDescription());
-            }
-        } catch (WrongArgumentsException e) {
-            System.err.println(e.getMessage());
+        System.out.println("Список доступных команд:");
+        for (BaseCommand command : commands) {
+            System.out.println(command.getName() + ": " + command.getDescription());
         }
-
     }
 }
