@@ -30,6 +30,8 @@ public class ExecuteScriptCommand extends BaseCommand {
      *
      * @param commandParts название команды и ее аргументы (файл, из которого нужно считать и исполнить скрипт)
      */
+
+    // TODO: refactor this method
     public void execute(String[] commandParts) {
         try {
             InputValidator.checkIfOneArgument(commandParts);
@@ -38,11 +40,12 @@ public class ExecuteScriptCommand extends BaseCommand {
                 FileConsole console = new FileConsole(reader);
                 executor.setDepth(executor.getDepth() + 1);
                 while (console.hasNextLine()) {
-                    boolean finished = executor.processCommand(console.getLine());
-                    if (!finished) {
-                        System.err.println("Ошибка при выполнении скрипта, проверьте правильность команд " + filename);
-                        break;
-                    }
+                    console.getLine();
+//                    boolean finished = executor.processCommand(console.getLine());
+//                    if (!finished) {
+//                        System.err.println("Ошибка при выполнении скрипта, проверьте правильность команд " + filename);
+//                        break;
+//                    }
                 }
                 executor.setDepth(executor.getDepth() - 1);
             } catch (IOException e) {

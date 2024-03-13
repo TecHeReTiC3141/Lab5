@@ -1,6 +1,5 @@
 package utils;
 
-import exceptions.UnknownCommandException;
 import server.commands.*;
 
 import java.util.ArrayList;
@@ -60,36 +59,22 @@ public class CommandExecutor {
     /**
      * Метод, обрабатывающий команду, введенную пользователем
      *
-     * @param line строка, содержащая команду
      * @return true, если команда была успешно обработана, иначе false
      * @see BaseCommand#execute(String[])
      */
 
-    public boolean processCommand(String line) {
+    public boolean processCommand(String commandName, String[] args) {
         if (depth > 1000) {
             System.out.println("Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя");
             depth = 0;
             return false;
         }
 
-        String[] commandParts = line.trim().split(" ");
-
-        if (commandParts.length == 0) {
-            return true;
-        }
-
-        try {
-            String commandName = commandParts[0].toLowerCase();
-            InputValidator.checkIsValidCommand(commandName, commands.keySet());
-            BaseCommand command = commands.get(commandName);
-            if (command.getNeedsParse()) {
-                command.execute(commandParts, depth > 0);
-            } else {
-                command.execute(commandParts);
-            }
-        } catch (UnknownCommandException e) {
-            System.err.println(e.getMessage());
-            return false;
+        BaseCommand command = commands.get(commandName);
+        if (command.getNeedsParse()) {
+            command.execute(args, depth > 0);
+        } else {
+            command.execute(args);
         }
         return true;
     }

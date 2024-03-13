@@ -2,17 +2,31 @@ package client;
 
 import routeClasses.Route;
 
-public class Request {
+import java.io.Serializable;
 
-    private String command;
+public class Request implements Serializable {
 
-    private String[] args;
+    private final String command;
 
-    private Route route;
+    private final String[] args;
+
+    private final Route route;
 
     public Request(String command, String[] args, Route route) {
         this.command = command;
         this.args = args;
         this.route = route;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
+
+    public Route getRoute() {
+        return route;
     }
 }
