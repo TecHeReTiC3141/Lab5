@@ -162,18 +162,7 @@ public class CollectionManager {
                 Node route = routeElements.item(i);
                 try {
                     Route newRoute = readFromXML(route);
-                    if (newRoute.getId() == 0) {
-                        if (collection.isEmpty()) {
-                            newRoute.setId(1);
-                            continue;
-                        }
-                        long maxId = 0L;
-                        for (Route item : collection) {
-                            maxId = Math.max(maxId, item.getId());
-                        }
-                        newRoute.setId(maxId + 1);
-                    }
-                    collection.push(newRoute);
+                    putToCollection(newRoute, true);
                 } catch (InvalidNameException | InvalidDistanceException | WrongArgumentsException |
                          AbsentRequiredParametersException e) {
                     System.err.printf("Ошибка при чтении записи %s: %s%n", lineCount, e.getMessage());

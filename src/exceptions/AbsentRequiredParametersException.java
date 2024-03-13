@@ -3,7 +3,7 @@ package exceptions;
 /**
  * Исключение, выбрасываемое при попытке создания объекта Route без указания обязательных параметров.
  */
-public class AbsentRequiredParametersException extends Exception {
+public class AbsentRequiredParametersException extends ValidationException {
 
     /**
      * Instantiates a new Absent required parameters exception.

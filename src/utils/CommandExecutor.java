@@ -1,7 +1,7 @@
 package utils;
 
-import commands.*;
 import exceptions.UnknownCommandException;
+import server.commands.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

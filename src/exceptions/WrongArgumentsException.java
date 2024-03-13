@@ -3,7 +3,7 @@ package exceptions;
 /**
  * Исключение, выбрасываемое при вводе неверного количества аргументов.
  */
-public class WrongArgumentsException extends Exception {
+public class WrongArgumentsException extends ValidationException {
 
     /**
      * Instantiates a new Wrong arguments exception.

@@ -4,7 +4,7 @@ package exceptions;
 /**
  * Исключение, выбрасываемое при попытке установить невалидное имя.
  */
-public class InvalidNameException extends Exception {
+public class InvalidNameException extends ValidationException {
     /**
      * Instantiates a new Invalid name exception.
      */

@@ -1,4 +1,4 @@
-package commands;
+package server.commands;
 
 import exceptions.WrongArgumentsException;
 import org.w3c.dom.Document;

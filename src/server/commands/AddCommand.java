@@ -1,4 +1,4 @@
-package commands;
+package server.commands;
 
 import exceptions.AbsentRequiredParametersException;
 import exceptions.InvalidDistanceException;

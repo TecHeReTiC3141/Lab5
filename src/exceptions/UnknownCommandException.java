@@ -3,7 +3,7 @@ package exceptions;
 /**
  * Исключение, выбрасываемое при вводе неизвестной команды.
  */
-public class UnknownCommandException extends Exception {
+public class UnknownCommandException extends ValidationException {
 
     /**
      * Instantiates a new Unknown command exception.
