@@ -80,13 +80,13 @@ public class Client {
 
 
                     // Receive response from the server
-                    ByteBuffer fromServer = ByteBuffer.allocate(1024);
+                    ByteBuffer fromServer = ByteBuffer.allocate(4096);
                     socketChannel.read(fromServer);
                     String response = new String(fromServer.array()).trim();
 
 
                     // Display the response received from the server
-                    System.out.println("Server response: " + response);
+                    System.out.println("Server response: \n" + response);
                     System.out.println("-----------------------------------\n");
                 } catch (UnknownCommandException e) {
                     System.out.println(e.getMessage());

@@ -23,7 +23,7 @@ public class UpdateByIdCommand extends ReadRoute {
      *
      * @param commandParts массив, содержащий название аргументы команды
      */
-    public void execute(String[] commandParts, boolean parse) {
+    public String execute(String[] commandParts, boolean parse) {
         try {
             if (parse) {
                 InputValidator.checkIfTwoArguments(commandParts);
@@ -33,19 +33,14 @@ public class UpdateByIdCommand extends ReadRoute {
             long id = Long.parseLong(commandParts[1]);
             boolean isFound = manager.findElementById(id);
             if (!isFound) {
-                System.out.println("Элемент с id " + id + " не найден. Обновление не выполнено.");
-                return;
+                return "Элемент с id " + id + " не найден. Обновление не выполнено.";
             }
             Route newRoute = parse ? parseRoute(commandParts[2]) : readRoute();
             newRoute.setId(id);
-            manager.updateElementById(id, newRoute);
+            return manager.updateElementById(id, newRoute);
         } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
                  AbsentRequiredParametersException | ArrayIndexOutOfBoundsException e) {
-            System.err.println(e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("ID должен быть целым числом");
-
+            return e.getMessage();
         }
-
     }
 }

@@ -32,7 +32,7 @@ public class ExecuteScriptCommand extends BaseCommand {
      */
 
     // TODO: refactor this method
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
         try {
             InputValidator.checkIfOneArgument(commandParts);
             String filename = commandParts[1];
@@ -55,6 +55,6 @@ public class ExecuteScriptCommand extends BaseCommand {
         } catch (WrongArgumentsException e) {
             System.err.println(e.getMessage());
         }
-        ;
+        return "Save command";
     }
 }

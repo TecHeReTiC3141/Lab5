@@ -18,8 +18,8 @@ public class ClearCommand extends BaseCommand {
      * @param commandParts массив, содержащий название и аргументы команды
      */
 
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
         manager.clearCollection();
-        System.out.println("Коллекция очищена");
+        return "Коллекция очищена";
     }
 }

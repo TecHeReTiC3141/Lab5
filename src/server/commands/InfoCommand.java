@@ -18,9 +18,9 @@ public class InfoCommand extends BaseCommand {
      *
      * @param commandParts название и аргументы команды
      */
-    public void execute(String[] commandParts) {
-        System.out.println("Тип коллекции: " + manager.getCollectionClassName());
-        System.out.println("Дата инициализации: " + manager.getInitDate());
-        System.out.println("Количество элементов: " + manager.getCollectionSize());
+    public String execute(String[] commandParts) {
+        return "Тип коллекции: " + manager.getCollectionClassName() + "\n" +
+                "Дата инициализации: " + manager.getInitDate() + "\n" +
+                "Количество элементов: " + manager.getCollectionSize();
     }
 }

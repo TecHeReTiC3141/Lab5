@@ -189,7 +189,7 @@ public class CollectionManager {
      * @param silence флаг, указывающий, нужно ли выводить сообщение о добавлении элемента
      */
 
-    public void putToCollection(Route route, boolean silence) {
+    public String putToCollection(Route route, boolean silence) {
         if (route.getId() == 0) {
 
             if (collection.isEmpty()) {
@@ -204,7 +204,8 @@ public class CollectionManager {
         }
 
         collection.push(route);
-        if (!silence) System.out.println("Маршрут успешно добавлен в коллекцию");
+        if (!silence) return "Маршрут успешно добавлен в коллекцию";
+        return "";
     }
 
     /**
@@ -256,26 +257,28 @@ public class CollectionManager {
     /**
      * Метод, выводящий элементы коллекции в порядке возрастания.
      */
-    public void printAscendingCommand() {
+    public String printAscendingCommand() {
         if (collection.isEmpty()) {
-            System.out.println("Коллекция пуста");
-            return;
+            return "Коллекция пуста";
         }
+        StringBuilder result = new StringBuilder();
         collection.stream()
                 .sorted()
-                .forEach(System.out::println);
+                .forEach(result::append);
+        return result.toString();
     }
 
     /**
      * Метод, выводящий поле distance элементов коллекции в порядке убывания.
      */
-    public void printDescendingDistance() {
+    public String printDescendingDistance() {
         if (collection.isEmpty()) {
-            System.out.println("Коллекция пуста");
-            return;
+            return "Коллекция пуста";
         }
-        System.out.println("Поля distance в порядке убывания:");
-        collection.stream().sorted(new RouteDistanceComparator()).forEach(r -> System.out.printf("%s - %s%n", r.getId(), r.getDistance()));
+        StringBuilder result = new StringBuilder();
+        result.append("Поля distance в порядке убывания:");
+        collection.stream().sorted(new RouteDistanceComparator()).forEach(r -> result.append("%s - %s%n".formatted(r.getId(), r.getDistance())));
+        return result.toString();
     }
 
     /**
@@ -289,7 +292,6 @@ public class CollectionManager {
             throw new ArrayIndexOutOfBoundsException();
         }
         collection.remove(index);
-        System.out.println("Элемент успешно удален");
     }
 
     /**
@@ -298,17 +300,16 @@ public class CollectionManager {
      * @param id id элемента, который нужно удалить
      */
 
-    public void removeById(long id) {
+    public String removeById(long id) {
         if (collection.isEmpty()) {
-            System.out.println("Коллекция пуста");
-            return;
+            return "Коллекция пуста";
         }
         boolean removed = collection.removeIf(route -> route.getId() == id);
         if (removed) {
-            System.out.println("Элемент успешно удален");
-        } else {
-            System.out.println("Элемент с таким id не найден");
+            return "Элемент успешно удален";
         }
+        return "Элемент с таким id не найден";
+
     }
 
     /**
@@ -323,7 +324,6 @@ public class CollectionManager {
         for (Route route : temp) {
             collection.push(route);
         }
-        System.out.println("Порядок элементов коллекции изменен на обратный");
     }
 
     /**
@@ -396,15 +396,16 @@ public class CollectionManager {
      * Метод, выводящий коллекцию.
      */
 
-    public void showCollection() {
+    public String showCollection() {
         if (collection.isEmpty()) {
-            System.out.println("Коллекция пуста");
-            return;
+            return "Коллекция пуста";
         }
-        System.out.println("Содержимое коллекции:");
+        StringBuilder result = new StringBuilder();
+        result.append("Содержимое коллекции: \n");
         for (Route route : collection) {
-            System.out.println(route);
+            result.append(route.toString()).append('\n');
         }
+        return result.toString();
     }
 
     /**
@@ -442,15 +443,15 @@ public class CollectionManager {
      * @param id       id элемента, который нужно обновить
      * @param newRoute новый элемент
      */
-    public void updateElementById(long id, Route newRoute) {
+    public String updateElementById(long id, Route newRoute) {
         for (Route route : collection) {
             if (route.getId() == id) {
                 collection.remove(route);
                 collection.add(newRoute);
-                System.out.println("Элемент с id " + id + " успешно обновлен.");
-                break;
+                return "Элемент с id " + id + " успешно обновлен.";
             }
         }
+        return "Не найдено";
     }
 
 }

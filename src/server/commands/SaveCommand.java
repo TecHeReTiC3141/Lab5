@@ -27,13 +27,12 @@ public class SaveCommand extends BaseCommand {
      *
      * @param commandParts массив, содержащий название и аргументы команды
      */
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
 
         try {
             InputValidator.checkIfNoArguments(commandParts);
             if (manager.getIsEmpty()) {
-                System.out.println("Коллекция пуста, нечего сохранять.");
-                return;
+                return "Коллекция пуста, нечего сохранять.";
             }
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 
@@ -47,6 +46,7 @@ public class SaveCommand extends BaseCommand {
         } catch (ParserConfigurationException e) {
             System.err.println("Ошибка при сохранение");
         }
+        return "";
 
 
     }

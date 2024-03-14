@@ -17,8 +17,8 @@ public class SortCommand extends BaseCommand {
      *
      * @param commandParts массив, содержащий название и аргументы команды
      */
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
         manager.sortCollection();
-        System.out.println("Коллекция успешно отсортирована");
+        return "Коллекция успешно отсортирована";
     }
 }

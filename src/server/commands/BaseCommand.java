@@ -64,8 +64,8 @@ public abstract class BaseCommand implements ICommand {
      *
      * @param commandParts массив, содержащий название и аргументы команды
      */
-    public void execute(String[] commandParts) {
-
+    public String execute(String[] commandParts) {
+        return "";
     }
 
     /**
@@ -74,7 +74,7 @@ public abstract class BaseCommand implements ICommand {
      * @param commandParts массив, содержащий название и аргументы команды
      * @param parse флаг, указывающий, нужно ли парсить аргументы команды
      */
-    public void execute(String[] commandParts, boolean parse) {
-
+    public String execute(String[] commandParts, boolean parse) {
+        return "";
     }
 }

@@ -19,7 +19,8 @@ public class PrintFieldDescendingDistanceCommand extends BaseCommand {
      * @param commandParts массив, содержащий название и аргументы команды
      */
 
-    public void execute(String[] commandParts) {
-        manager.printDescendingDistance();
+    public String execute(String[] commandParts) {
+
+        return manager.printDescendingDistance();
     }
 }

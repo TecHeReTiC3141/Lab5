@@ -18,11 +18,12 @@ public class RemoveAtCommand extends BaseCommand {
      * @param commandParts массив, содержащий название и аргументы команды
      */
 
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
         try {
             manager.removeElementAt(Integer.parseInt(commandParts[1]));
+            return "Элемент успешно удален";
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Элемента с таким индексом не существует. Проверьте, что это число больше 0 и меньше размера коллекции");
+            return "Элемента с таким индексом не существует. Проверьте, что это число больше 0 и меньше размера коллекции";
         }
     }
 }

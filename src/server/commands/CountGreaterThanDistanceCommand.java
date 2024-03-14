@@ -17,13 +17,12 @@ public class CountGreaterThanDistanceCommand extends BaseCommand {
      * @param commandParts массив, содержащий название и аргументы команды
      */
 
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
         if (manager.getIsEmpty()) {
-            System.out.println("Коллекция пуста");
-            return;
+            return "Коллекция пуста";
         }
         double distance = Double.parseDouble(commandParts[1]);
         long count = manager.countGreaterThanDistance(distance);
-        System.out.printf("Количество элементов, значение поля distance которых больше %s - %s%n", distance, count);
+        return "Количество элементов, значение поля distance которых больше %s - %s%n".formatted(distance, count);
     }
 }

@@ -25,7 +25,7 @@ public interface ICommand {
      *
      * @param commandParts массив, содержащий название и аргументы команды
      */
-    void execute(String[] commandParts);
+    String execute(String[] commandParts);
 
     /**
      * Метод, в котором выполняется логика команды, при этом нужно обработать передаваемые значения.
@@ -33,5 +33,5 @@ public interface ICommand {
      * @param commandParts массив, содержащий название и аргументы команды
      * @param parse флаг, указывающий, нужно ли парсить аргументы команды
      */
-    void execute(String[] commandParts, boolean parse);
+    String execute(String[] commandParts, boolean parse);
 }

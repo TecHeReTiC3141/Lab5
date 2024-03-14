@@ -18,7 +18,7 @@ public class ShowCommand extends BaseCommand {
      * @param commandParts название и аргументы команды
      */
 
-    public void execute(String[] commandParts) {
-        manager.showCollection();
+    public String execute(String[] commandParts) {
+        return manager.showCollection();
     }
 }

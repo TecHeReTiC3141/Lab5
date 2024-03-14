@@ -63,19 +63,16 @@ public class CommandExecutor {
      * @see BaseCommand#execute(String[])
      */
 
-    public boolean processCommand(String commandName, String[] args) {
+    public String processCommand(String commandName, String[] args) {
         if (depth > 1000) {
-            System.out.println("Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя");
             depth = 0;
-            return false;
+            return "Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя";
         }
 
         BaseCommand command = commands.get(commandName);
         if (command.getNeedsParse()) {
-            command.execute(args, depth > 0);
-        } else {
-            command.execute(args);
+            return command.execute(args, depth > 0);
         }
-        return true;
+        return command.execute(args);
     }
 }

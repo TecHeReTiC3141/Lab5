@@ -25,7 +25,7 @@ public class ExitCommand extends BaseCommand {
      * Метод, реализующий логику команды exit
      * @param commandParts название команды и ее аргументы
      */
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
         throw new ExitException();
     }
 

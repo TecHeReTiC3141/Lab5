@@ -19,7 +19,8 @@ public class ReorderCommand extends BaseCommand {
      * @param commandParts массив, содержащий название и аргументы команды
      */
 
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
         manager.reorder();
+        return "Порядок элементов коллекции изменен на обратный";
     }
 }

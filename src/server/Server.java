@@ -80,15 +80,14 @@ public class Server {
                     fromClientBuffer.clear();
                     System.out.println(request);
 
-
-                    executor.processCommand(request.getCommand(), request.getArgs());
-                    client.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.allocate(4096));
+                    byte[] response = executor.processCommand(request.getCommand(), request.getArgs()).getBytes();
+                    ByteBuffer responseBuffer = ByteBuffer.wrap(response);
+                    client.register(key.selector(), SelectionKey.OP_WRITE, responseBuffer);
                 } else if (key.isWritable()) {
                     System.out.println("Writing...");
                     SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
                     client.configureBlocking(false); // неблокирующий режим
                     ByteBuffer buffer = (ByteBuffer) key.attachment();
-                    buffer.put("Data received and processed".getBytes());
                     client.write(buffer);
 
                     client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));

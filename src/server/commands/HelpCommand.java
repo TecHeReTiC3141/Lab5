@@ -25,10 +25,12 @@ public class HelpCommand extends BaseCommand {
     /**
      * Main method.
      */
-    public void execute(String[] commandParts) {
-        System.out.println("Список доступных команд:");
+    public String execute(String[] commandParts) {
+        StringBuilder result = new StringBuilder();
+        result.append("Список доступных команд:");
         for (BaseCommand command : commands) {
-            System.out.println(command.getName() + ": " + command.getDescription());
+            result.append(command.getName() + ": " + command.getDescription() + '\n');
         }
+        return result.toString();
     }
 }

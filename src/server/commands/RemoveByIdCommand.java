@@ -18,8 +18,8 @@ public class RemoveByIdCommand extends BaseCommand {
      * @param commandParts массив, содержащий название аргументы команды
      */
 
-    public void execute(String[] commandParts) {
+    public String execute(String[] commandParts) {
         long id = Long.parseLong(commandParts[1]);
-        manager.removeById(id);
+        return manager.removeById(id);
     }
 }
