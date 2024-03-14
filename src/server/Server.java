@@ -64,54 +64,34 @@ public class Server {
                     SocketChannel client = serverChannel.accept(); // позволяет вашему серверу принять новое входящее соединение и дает вам возможность взаимодействовать с клиентом, используя этот SocketChannel
                     System.out.println("Connection accepted from " + client);
                     client.configureBlocking(false); // неблокирующий режим
-                    client.register(key.selector(), SelectionKey.OP_READ);
+                    client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
                 } else if (key.isReadable()) {
                     System.out.println("Reading...");
 
                     SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
                     client.configureBlocking(false); // неблокирующий режим
 
-                    ByteBuffer fromClientBuffer = ByteBuffer.allocate(4096);
+                    ByteBuffer fromClientBuffer = (ByteBuffer) key.attachment();
                     client.read(fromClientBuffer);
 
                     ObjectInputStream fromClient = new ObjectInputStream(new ByteArrayInputStream(fromClientBuffer.array()));
 
                     Request request = (Request) fromClient.readObject();
+                    fromClientBuffer.clear();
+                    System.out.println(request);
+
 
                     executor.processCommand(request.getCommand(), request.getArgs());
-                    ByteBuffer buffer = ByteBuffer.allocate(1024);
-//                    int bytesRead = client.read(buffer);
-//                    if (bytesRead == -1) {
-//                        System.out.println("TCP connection closed");
-//                        key.cancel();
-//                        continue;
-//                    }
-//                    buffer.flip();
-//                    byte[] content = new byte[bytesRead];
-//                    buffer.get(content);
-//                    String receivedString = new String(content);
-//                    System.out.println("Data received: " + receivedString);
-//                    clientDataMap.get(client).append(receivedString);
-
-                    /*
-                    InputStream input = tests.client.socket().getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    System.out.println(reader.readLine());
-                    */
-
-                    client.register(key.selector(), SelectionKey.OP_WRITE);
+                    client.register(key.selector(), SelectionKey.OP_WRITE, ByteBuffer.allocate(4096));
                 } else if (key.isWritable()) {
                     System.out.println("Writing...");
                     SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
                     client.configureBlocking(false); // неблокирующий режим
-                    ByteBuffer buffer = ByteBuffer.allocate(4096);
+                    ByteBuffer buffer = (ByteBuffer) key.attachment();
                     buffer.put("Data received and processed".getBytes());
                     client.write(buffer);
-                    StringBuilder dataToSend = clientDataMap.get(client);
-//                    client.write(buffer);
-//                    System.out.println("Data sent to " + client.getRemoteAddress() + ": " + dataToSend);
-//                    dataToSend.setLength(0);
-                    client.register(key.selector(), SelectionKey.OP_READ);
+
+                    client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
                 }
             }
 

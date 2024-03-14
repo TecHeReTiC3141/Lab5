@@ -1,8 +1,6 @@
 package server.commands;
 
-import exceptions.WrongArgumentsException;
 import utils.CollectionManager;
-import utils.InputValidator;
 
 /**
  * Класс, реализующий команду count_greater_than_distance, которая выводит количество элементов со значением поля distance больше заданного.
@@ -24,16 +22,8 @@ public class CountGreaterThanDistanceCommand extends BaseCommand {
             System.out.println("Коллекция пуста");
             return;
         }
-        try {
-            InputValidator.checkIfOneArgument(commandParts);
-            double distance = Double.parseDouble(commandParts[1]);
-            long count = manager.countGreaterThanDistance(distance);
-            System.out.printf("Количество элементов, значение поля distance которых больше %s - %s%n", distance, count);
-        } catch (WrongArgumentsException e) {
-            System.err.println(e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("distance должен быть положительным вещественным числом");
-        }
-
+        double distance = Double.parseDouble(commandParts[1]);
+        long count = manager.countGreaterThanDistance(distance);
+        System.out.printf("Количество элементов, значение поля distance которых больше %s - %s%n", distance, count);
     }
 }

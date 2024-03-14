@@ -1,8 +1,6 @@
 package server.commands;
 
-import exceptions.WrongArgumentsException;
 import utils.CollectionManager;
-import utils.InputValidator;
 
 /**
  * Класс, реализующий команду reorder, которая изменяет порядок элементов коллекции на обратный.
@@ -22,12 +20,6 @@ public class ReorderCommand extends BaseCommand {
      */
 
     public void execute(String[] commandParts) {
-        try {
-            InputValidator.checkIfNoArguments(commandParts);
-            manager.reorder();
-        } catch (WrongArgumentsException e) {
-            System.err.println(e.getMessage());
-        }
-
+        manager.reorder();
     }
 }

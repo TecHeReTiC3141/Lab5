@@ -417,7 +417,6 @@ public class CollectionManager {
         for (Route route : routes) {
             collection.push(route);
         }
-        System.out.println("Коллекция успешно отсортирована");
     }
 
     /**

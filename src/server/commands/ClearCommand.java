@@ -1,8 +1,6 @@
 package server.commands;
 
-import exceptions.WrongArgumentsException;
 import utils.CollectionManager;
-import utils.InputValidator;
 
 /**
  * Класс, реализующий команду clear, очищающую коллекцию.
@@ -17,17 +15,11 @@ public class ClearCommand extends BaseCommand {
     /**
      * Метод, очищающий коллекцию.
      *
-        * @param commandParts массив, содержащий название и аргументы команды
+     * @param commandParts массив, содержащий название и аргументы команды
      */
 
     public void execute(String[] commandParts) {
-        try {
-            InputValidator.checkIfNoArguments(commandParts);
-            manager.clearCollection();
-            System.out.println("Коллекция очищена");
-        } catch (WrongArgumentsException e) {
-            System.err.println(e.getMessage());
-        }
-
+        manager.clearCollection();
+        System.out.println("Коллекция очищена");
     }
 }

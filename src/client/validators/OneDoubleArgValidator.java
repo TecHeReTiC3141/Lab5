@@ -3,12 +3,12 @@ package client.validators;
 import client.Request;
 import exceptions.WrongArgumentsException;
 
-public class OneIntArgValidator extends BaseValidator {
+public class OneDoubleArgValidator extends BaseValidator {
 
     public Request validate(String command, String[] args) {
         try {
             checkIfOneArgument(command, args);
-            int firstArg = Integer.parseInt(args[0]);
+            double firstArg = Double.parseDouble(args[0]);
             return super.validate(command, args);
         } catch (WrongArgumentsException e) {
             System.out.println(e.getMessage());

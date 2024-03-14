@@ -47,10 +47,10 @@ public class Client {
         try (SocketChannel socketChannel = SocketChannel.open();) {
             socketChannel.connect(new InetSocketAddress("localhost", port));
             System.out.println("Client Socket connected");
-            ByteArrayOutputStream bais = new ByteArrayOutputStream();
-            ObjectOutputStream toServer = new ObjectOutputStream(bais);
 
             SystemInConsole sc = new SystemInConsole();
+
+
             System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
             while (true) {
                 String line = sc.getLine();
@@ -66,10 +66,18 @@ public class Client {
                 try {
                     BaseValidator.checkIsValidCommand(commandName, validators.keySet());
                     Request request = validators.get(commandName).validate(commandName, commandParts.toArray(new String[0]));
-                    System.out.println(request);
+                    if (request == null) {
+                        continue;
+                    }
 
+                    System.out.println(request);
+                    // TODO: do not create new stream every time
+                    ByteArrayOutputStream bais = new ByteArrayOutputStream();
+                    ObjectOutputStream toServer = new ObjectOutputStream(bais);
                     toServer.writeObject(request);
+
                     socketChannel.write(ByteBuffer.wrap(bais.toByteArray()));
+
 
                     // Receive response from the server
                     ByteBuffer fromServer = ByteBuffer.allocate(1024);

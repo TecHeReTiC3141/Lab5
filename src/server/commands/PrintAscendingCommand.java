@@ -1,8 +1,6 @@
 package server.commands;
 
-import exceptions.WrongArgumentsException;
 import utils.CollectionManager;
-import utils.InputValidator;
 
 /**
  * Класс, реализующий команду print_ascending, которая выводит элементы коллекции, отсортированные в естественном порядке.
@@ -20,12 +18,6 @@ public class PrintAscendingCommand extends BaseCommand {
      */
 
     public void execute(String[] commandParts) {
-        try {
-            InputValidator.checkIfNoArguments(commandParts);
-            manager.printAscendingCommand();
-        } catch (WrongArgumentsException e) {
-            System.err.println(e.getMessage());
-        }
-
+        manager.printAscendingCommand();
     }
 }

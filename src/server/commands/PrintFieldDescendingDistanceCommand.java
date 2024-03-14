@@ -1,8 +1,6 @@
 package server.commands;
 
-import exceptions.WrongArgumentsException;
 import utils.CollectionManager;
-import utils.InputValidator;
 
 /**
  * Класс, реализующий команду print_field_descending_distance,
@@ -22,13 +20,6 @@ public class PrintFieldDescendingDistanceCommand extends BaseCommand {
      */
 
     public void execute(String[] commandParts) {
-
-        try {
-            InputValidator.checkIfNoArguments(commandParts);
-            manager.printDescendingDistance();
-        } catch (WrongArgumentsException e) {
-            System.err.println(e.getMessage());
-        }
-
+        manager.printDescendingDistance();
     }
 }
