@@ -1,15 +1,21 @@
 package server;
 
 import client.Request;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import routeClasses.Route;
 import utils.CollectionManager;
 import utils.CommandExecutor;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -38,8 +44,9 @@ public class Server {
         this.executor = new CommandExecutor(manager);
     }
 
+    // TODO: separate server into four sections: connectionHandler, requestHandler, responseHandler, and commandExecutor
     public void run() throws IOException, ClassNotFoundException {
-
+        this.manager.loadInitialCollection();
         InetSocketAddress address = new InetSocketAddress(port); // создаем адрес сокета (IP-адрес и порт)
 
         ServerSocketChannel channel = ServerSocketChannel.open(); // канал для сервера, который слушает порты и создает сокеты для клиентов
@@ -50,26 +57,32 @@ public class Server {
         channel.register(selector, SelectionKey.OP_ACCEPT);
         Map<SocketChannel, StringBuilder> clientDataMap = new HashMap<>();
 
-        while (true) {
-            selector.select(); // количество ключей, чьи каналы готовы к операции. БЛОКИРУЕТ, ПОКА НЕ БУДЕТ КЛЮЧЕЙ
-            Set<SelectionKey> selectedKeys = selector.selectedKeys(); // получаем список ключей от каналов, готовых к работеwhile (iter.hasNext()) {
-            Iterator<SelectionKey> iter = selectedKeys.iterator(); // получаем итератор ключей
 
-            while (iter.hasNext()) {
+        try {
+            while (true) {
+                selector.select(); // количество ключей, чьи каналы готовы к операции. БЛОКИРУЕТ, ПОКА НЕ БУДЕТ КЛЮЧЕЙ
+                Set<SelectionKey> selectedKeys = selector.selectedKeys(); // получаем список ключей от каналов, готовых к работеwhile (iter.hasNext()) {
+                Iterator<SelectionKey> iter = selectedKeys.iterator(); // получаем итератор ключей
 
-                SelectionKey key = iter.next();
-                iter.remove();
-                if (key.isAcceptable()) {
-                    handleAccept(key);
-                } else if (key.isReadable()) {
-                    System.out.println("Reading...");
-                    handleRead(key);
-                } else if (key.isWritable()) {
-                    System.out.println("Writing...");
-                    handleWrite(key);
+                while (iter.hasNext()) {
+
+                    SelectionKey key = iter.next();
+                    iter.remove();
+                    if (key.isAcceptable()) {
+                        handleAccept(key);
+                    } else if (key.isReadable()) {
+                        System.out.println("Reading...");
+                        handleRead(key);
+                    } else if (key.isWritable()) {
+                        System.out.println("Writing...");
+                        handleWrite(key);
+                    }
                 }
             }
+        } catch (SocketException e) {
+            System.out.println("Client is disconnected");
         }
+        saveCollection();
     }
 
     private void handleAccept(SelectionKey key) throws IOException {
@@ -110,4 +123,23 @@ public class Server {
         client.write(buffer);
         client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
     }
+
+    private void saveCollection() {
+        try {
+            if (manager.getIsEmpty()) {
+                System.out.println("Коллекция пуста, нечего сохранять.");
+            }
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+            Document document = builder.newDocument();
+            Element root = document.createElement("Routes");
+            document.appendChild(root);
+            manager.addCollectionToRoot(document, root);
+
+        } catch (ParserConfigurationException e) {
+            System.err.println("Ошибка при сохранение");
+        }
+        System.out.println("Коллекция успешно сохранена в файл.");
+    }
 }
+

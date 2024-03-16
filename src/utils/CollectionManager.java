@@ -205,7 +205,7 @@ public class CollectionManager {
 
         collection.push(route);
         if (!silence) return "Маршрут успешно добавлен в коллекцию";
-        return "";
+        return "Silently added";
     }
 
     /**

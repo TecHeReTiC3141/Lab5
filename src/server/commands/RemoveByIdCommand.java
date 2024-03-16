@@ -20,7 +20,7 @@ public class RemoveByIdCommand extends BaseCommand {
      */
 
     public String execute(String[] commandParts, Route route) {
-        long id = Long.parseLong(commandParts[1]);
+        long id = Long.parseLong(commandParts[0]);
         return manager.removeById(id);
     }
 }

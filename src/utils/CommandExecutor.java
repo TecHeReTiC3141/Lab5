@@ -29,7 +29,6 @@ public class CommandExecutor {
                 put("clear", new ClearCommand("clear", "очистить коллекцию", manager));
                 put("remove_at", new RemoveAtCommand("remove_at index", "удалить элемент с заданным номером", manager));
                 put("reorder", new ReorderCommand("reorder", "отсортировать коллекцию в порядке возрастания", manager));
-                put("save", new SaveCommand("save", "сохранить коллекцию в файл", manager));
                 put("sort", new SortCommand("sort", "отсортировать коллекцию в порядке убывания", manager));
                 put("count_greater_than_distance", new CountGreaterThanDistanceCommand("count_greater_than_distance distance", "вывести количество элементов, значение поля distance которых больше заданного", manager));
                 put("print_ascending", new PrintAscendingCommand("print_ascending", "вывести элементы коллекции в естественном порядке возрастания", manager));
@@ -61,7 +60,6 @@ public class CommandExecutor {
      * Метод, обрабатывающий команду, введенную пользователем
      *
      * @return true, если команда была успешно обработана, иначе false
-     * @see BaseCommand#execute(String[])
      */
 
     public String processCommand(String commandName, String[] args, Route route) {
@@ -71,9 +69,6 @@ public class CommandExecutor {
         }
 
         BaseCommand command = commands.get(commandName);
-        if (command.getNeedsParse()) {
-            return command.execute(args, route, depth > 0);
-        }
         return command.execute(args, route);
     }
 }

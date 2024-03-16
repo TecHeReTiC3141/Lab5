@@ -22,7 +22,7 @@ public class CountGreaterThanDistanceCommand extends BaseCommand {
         if (manager.getIsEmpty()) {
             return "Коллекция пуста";
         }
-        double distance = Double.parseDouble(commandParts[1]);
+        double distance = Double.parseDouble(commandParts[0]);
         long count = manager.countGreaterThanDistance(distance);
         return "Количество элементов, значение поля distance которых больше %s - %s%n".formatted(distance, count);
     }

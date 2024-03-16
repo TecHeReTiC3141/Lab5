@@ -29,7 +29,6 @@ public class Client {
                 put("clear", new NoArgumentsValidator());
                 put("remove_at", new OneIntArgValidator());
                 put("reorder", new NoArgumentsValidator());
-                put("save", new NoArgumentsValidator());
                 put("sort", new NoArgumentsValidator());
                 put("count_greater_than_distance", new OneIntArgValidator());
                 put("print_ascending", new NoArgumentsValidator());
@@ -92,7 +91,7 @@ public class Client {
 
 
                     // Display the response received from the server
-                    System.out.println("Server response: \n" + response);
+                    System.out.println(response);
                     System.out.println("-----------------------------------\n");
                 } catch (UnknownCommandException e) {
                     System.out.println(e.getMessage());
