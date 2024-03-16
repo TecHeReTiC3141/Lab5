@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Server {
 
-    private final int saveInterval = 30;
+    private final int saveInterval = 300;
 
     /**
      * Обработчик команд

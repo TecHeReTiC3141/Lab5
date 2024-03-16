@@ -40,6 +40,7 @@ public class CollectionManager {
      */
     private final Date initDate = new Date();
 
+    // TODO:  rewrite all methods to use Stream api
     private final Stack<Route> collection;
 
     /**

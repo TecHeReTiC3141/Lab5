@@ -26,6 +26,8 @@ public class ReadValidator extends BaseValidator {
         try {
             if (parse) {
                 checkIfOneArgument(command, args);
+            } else {
+                checkIfNoArguments(command, args);
             }
             Route route = parse ? parseRoute(args[1]) : readRoute();
             return super.validate(command, args, route);

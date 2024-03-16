@@ -3,9 +3,11 @@ package client;
 import client.validators.*;
 import exceptions.ExitException;
 import exceptions.UnknownCommandException;
+import utils.FileConsole;
 import utils.SystemInConsole;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
@@ -16,6 +18,10 @@ import java.util.*;
 public class Client {
 
     private final Map<String, BaseValidator> validators;
+
+    private SocketChannel socketChannel;
+
+    private int depth = 0;
 
     public Client() {
         validators = new HashMap<>() {
@@ -34,8 +40,22 @@ public class Client {
                 put("print_ascending", new NoArgumentsValidator());
                 put("print_field_descending_distance", new NoArgumentsValidator());
                 put("exit", new ExitValidator());
+                put("execute_script", new ExecuteScriptValidator());
             }
         };
+    }
+
+    public void openSocket() throws IOException {
+        // Open the socket channel
+        socketChannel = SocketChannel.open();
+        // You can set additional options, configure, etc. here if needed
+    }
+
+    public void closeSocket() throws IOException {
+        // Close the socket channel
+        if (socketChannel != null && socketChannel.isOpen()) {
+            socketChannel.close();
+        }
     }
 
 
@@ -43,7 +63,8 @@ public class Client {
 
 
     public void run() {
-        try (SocketChannel socketChannel = SocketChannel.open();) {
+        try {
+            openSocket();
             socketChannel.connect(new InetSocketAddress("localhost", port));
 
             SystemInConsole sc = new SystemInConsole();
@@ -51,63 +72,104 @@ public class Client {
 
             System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
             while (true) {
-                String line = sc.getLine();
-                if (line.isEmpty()) {
-                    continue;
-                }
-
-                ArrayList<String> commandParts = new ArrayList<>(Arrays.asList(line.trim().split(" ")));
-
-                String commandName = commandParts.get(0).toLowerCase();
-                commandParts.remove(0);
+                Request request = lineToRequest(sc.getLine());
 
                 try {
-                    BaseValidator.checkIsValidCommand(commandName, validators.keySet());
-                    Request request;
-                    BaseValidator validator = validators.get(commandName);
-                    if (validator.getNeedParse()) {
-                        request = validator.validate(commandName, commandParts.toArray(new String[0]), false);
-                    } else {
-                        request = validator.validate(commandName, commandParts.toArray(new String[0]));
-                    }
-                    if (request == null) {
-                        continue;
-                    }
-
-                    System.out.println(request);
-
-                    // TODO: do not create new stream every time
-                    ByteArrayOutputStream bais = new ByteArrayOutputStream();
-                    ObjectOutputStream toServer = new ObjectOutputStream(bais);
-                    toServer.writeObject(request);
-
-                    socketChannel.write(ByteBuffer.wrap(bais.toByteArray()));
-
-
-                    // Receive response from the server
-                    ByteBuffer fromServer = ByteBuffer.allocate(4096);
-                    socketChannel.read(fromServer);
-                    String response = new String(fromServer.array()).trim();
-
-
-                    // Display the response received from the server
-                    System.out.println(response);
-                    System.out.println("-----------------------------------\n");
-                } catch (UnknownCommandException e) {
-                    System.out.println(e.getMessage());
+                    handleRequest(request);
                 } catch (ExitException e) {
                     System.out.println("Выход из программы...");
                     break;
-                }  catch (NoSuchElementException e) {
+                } catch (NoSuchElementException e) {
                     System.err.println("Достигнут конец ввода, завершение работы программы...");
                     System.exit(130);
                 }
             }
 
-            socketChannel.close();
+            closeSocket();
             System.out.println("Socket channel closed");
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private Request lineToRequest(String line) throws ExitException, NoSuchElementException {
+        if (line.isEmpty()) {
+            return null;
+        }
+
+        ArrayList<String> commandParts = new ArrayList<>(Arrays.asList(line.trim().split(" ")));
+
+        String commandName = commandParts.get(0).toLowerCase();
+        commandParts.remove(0);
+
+        try {
+            BaseValidator.checkIsValidCommand(commandName, validators.keySet());
+            BaseValidator validator = validators.get(commandName);
+            if (validator.getNeedParse()) {
+                return validator.validate(commandName, commandParts.toArray(new String[0]), depth > 0);
+            }
+            return validator.validate(commandName, commandParts.toArray(new String[0]));
+        } catch (UnknownCommandException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public void handleRequest(Request request) {
+        if (request == null) return;
+        if (depth > 1000) {
+            depth = 0;
+            System.err.println("Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя");
+            return;
+        }
+        try {
+
+            if (request.getCommand().equals("execute_script")) {
+                handleExecuteScript(request);
+            }
+            makeRequest(request);
+        } catch (IOException e) {
+            System.err.println("Ошибка при отправке запроса: " + e.getMessage());
+        }
+    }
+    // TODO: fix recursion
+    public void handleExecuteScript(Request request) {
+        if (depth > 1000) {
+            depth = 0;
+            System.err.println("Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя");
+            return;
+        }
+        String filename = request.getArgs()[0];
+        try (FileReader reader = new FileReader(filename)) {
+            FileConsole console = new FileConsole(reader);
+            ++depth;
+            while (console.hasNextLine()) {
+                Request newRequest = lineToRequest(console.getLine());
+                handleRequest(newRequest);
+            }
+            --depth;
+        } catch (IOException e) {
+            System.err.println("Ошибка при чтении файла: " + e.getMessage());
+        }
+    }
+
+    public void makeRequest(Request request) throws IOException {
+        // TODO: do not create new stream every time
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();
+        ObjectOutputStream toServer = new ObjectOutputStream(bais);
+        toServer.writeObject(request);
+
+        socketChannel.write(ByteBuffer.wrap(bais.toByteArray()));
+
+
+        // Receive response from the server
+        ByteBuffer fromServer = ByteBuffer.allocate(4096);
+        socketChannel.read(fromServer);
+        String response = new String(fromServer.array()).trim();
+
+
+        // Display the response received from the server
+        System.out.println(response);
+        System.out.println("-----------------------------------\n");
     }
 }
