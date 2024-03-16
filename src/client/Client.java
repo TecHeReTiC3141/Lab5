@@ -24,7 +24,7 @@ public class Client {
                 put("info", new NoArgumentsValidator());
                 put("show", new NoArgumentsValidator());
                 put("add", new AddValidator());
-                put("update", new UpdateValidator());
+                put("update", new UpdateByIdValidator());
                 put("remove_by_id", new OneIntArgValidator());
                 put("clear", new NoArgumentsValidator());
                 put("remove_at", new OneIntArgValidator());
@@ -46,7 +46,6 @@ public class Client {
     public void run() {
         try (SocketChannel socketChannel = SocketChannel.open();) {
             socketChannel.connect(new InetSocketAddress("localhost", port));
-            System.out.println("Client Socket connected");
 
             SystemInConsole sc = new SystemInConsole();
 
@@ -65,12 +64,19 @@ public class Client {
 
                 try {
                     BaseValidator.checkIsValidCommand(commandName, validators.keySet());
-                    Request request = validators.get(commandName).validate(commandName, commandParts.toArray(new String[0]));
+                    Request request;
+                    BaseValidator validator = validators.get(commandName);
+                    if (validator.getNeedParse()) {
+                        request = validator.validate(commandName, commandParts.toArray(new String[0]), false);
+                    } else {
+                        request = validator.validate(commandName, commandParts.toArray(new String[0]));
+                    }
                     if (request == null) {
                         continue;
                     }
 
                     System.out.println(request);
+
                     // TODO: do not create new stream every time
                     ByteArrayOutputStream bais = new ByteArrayOutputStream();
                     ObjectOutputStream toServer = new ObjectOutputStream(bais);

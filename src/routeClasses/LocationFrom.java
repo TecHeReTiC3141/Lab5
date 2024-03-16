@@ -1,9 +1,11 @@
 package routeClasses;
 
+import java.io.Serializable;
+
 /**
  * Класс, представляющий поле locationFrom класса Route.
  */
-public class LocationFrom {
+public class LocationFrom implements Serializable {
 
     private Integer x; //Поле не может быть null
     private Long y; //Поле не может быть null

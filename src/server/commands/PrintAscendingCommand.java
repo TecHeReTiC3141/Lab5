@@ -1,5 +1,6 @@
 package server.commands;
 
+import routeClasses.Route;
 import utils.CollectionManager;
 
 /**
@@ -17,7 +18,7 @@ public class PrintAscendingCommand extends BaseCommand {
      * @param commandParts массив, содержащий название и аргументы команды
      */
 
-    public String execute(String[] commandParts) {
+    public String execute(String[] commandParts, Route route) {
 
         return manager.printAscendingCommand();
     }

@@ -1,5 +1,6 @@
 package server.commands;
 
+import routeClasses.Route;
 import utils.CollectionManager;
 
 /**
@@ -64,7 +65,7 @@ public abstract class BaseCommand implements ICommand {
      *
      * @param commandParts массив, содержащий название и аргументы команды
      */
-    public String execute(String[] commandParts) {
+    public String execute(String[] commandParts, Route route) {
         return "";
     }
 
@@ -74,7 +75,7 @@ public abstract class BaseCommand implements ICommand {
      * @param commandParts массив, содержащий название и аргументы команды
      * @param parse флаг, указывающий, нужно ли парсить аргументы команды
      */
-    public String execute(String[] commandParts, boolean parse) {
+    public String execute(String[] commandParts, Route route, boolean parse) {
         return "";
     }
 }

@@ -1,9 +1,5 @@
 package server.commands;
 
-import exceptions.AbsentRequiredParametersException;
-import exceptions.InvalidDistanceException;
-import exceptions.InvalidNameException;
-import exceptions.WrongArgumentsException;
 import routeClasses.Route;
 import utils.CollectionManager;
 
@@ -24,15 +20,8 @@ public class AddCommand extends ReadRoute {
      * @param commandParts массив, содержащий название аргументы команды
      */
 
-    public String execute(String[] commandParts, boolean parse) {
-        try {
-            Route route = parse ? parseRoute(commandParts[1]) : readRoute();
-            return manager.putToCollection(route, false);
-        } catch (WrongArgumentsException | InvalidNameException | InvalidDistanceException |
-                 AbsentRequiredParametersException e) {
-            return e.getMessage();
-        }
-
+    public String execute(String[] commandParts, Route route) {
+        return manager.putToCollection(route, false);
     }
 
 }

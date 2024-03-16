@@ -1,6 +1,7 @@
 package server.commands;
 
 import exceptions.ExitException;
+import routeClasses.Route;
 import utils.CollectionManager;
 
 /**
@@ -25,7 +26,7 @@ public class ExitCommand extends BaseCommand {
      * Метод, реализующий логику команды exit
      * @param commandParts название команды и ее аргументы
      */
-    public String execute(String[] commandParts) {
+    public String execute(String[] commandParts, Route route) {
         throw new ExitException();
     }
 

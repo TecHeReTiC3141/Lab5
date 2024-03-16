@@ -1,5 +1,6 @@
 package server.commands;
 
+import routeClasses.Route;
 import utils.CollectionManager;
 
 /**
@@ -18,7 +19,7 @@ public class InfoCommand extends BaseCommand {
      *
      * @param commandParts название и аргументы команды
      */
-    public String execute(String[] commandParts) {
+    public String execute(String[] commandParts, Route route) {
         return "Тип коллекции: " + manager.getCollectionClassName() + "\n" +
                 "Дата инициализации: " + manager.getInitDate() + "\n" +
                 "Количество элементов: " + manager.getCollectionSize();

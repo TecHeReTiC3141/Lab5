@@ -8,6 +8,7 @@ import utils.CommandExecutor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.StreamCorruptedException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -59,42 +60,54 @@ public class Server {
                 SelectionKey key = iter.next();
                 iter.remove();
                 if (key.isAcceptable()) {
-
-                    ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel(); // используется для доступа к серверному каналу
-                    SocketChannel client = serverChannel.accept(); // позволяет вашему серверу принять новое входящее соединение и дает вам возможность взаимодействовать с клиентом, используя этот SocketChannel
-                    System.out.println("Connection accepted from " + client);
-                    client.configureBlocking(false); // неблокирующий режим
-                    client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
+                    handleAccept(key);
                 } else if (key.isReadable()) {
                     System.out.println("Reading...");
-
-                    SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
-                    client.configureBlocking(false); // неблокирующий режим
-
-                    ByteBuffer fromClientBuffer = (ByteBuffer) key.attachment();
-                    client.read(fromClientBuffer);
-
-                    ObjectInputStream fromClient = new ObjectInputStream(new ByteArrayInputStream(fromClientBuffer.array()));
-
-                    Request request = (Request) fromClient.readObject();
-                    fromClientBuffer.clear();
-                    System.out.println(request);
-
-                    byte[] response = executor.processCommand(request.getCommand(), request.getArgs()).getBytes();
-                    ByteBuffer responseBuffer = ByteBuffer.wrap(response);
-                    client.register(key.selector(), SelectionKey.OP_WRITE, responseBuffer);
+                    handleRead(key);
                 } else if (key.isWritable()) {
                     System.out.println("Writing...");
-                    SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
-                    client.configureBlocking(false); // неблокирующий режим
-                    ByteBuffer buffer = (ByteBuffer) key.attachment();
-                    client.write(buffer);
-
-                    client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
+                    handleWrite(key);
                 }
             }
-
-
         }
+    }
+
+    private void handleAccept(SelectionKey key) throws IOException {
+        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel(); // используется для доступа к серверному каналу
+        SocketChannel client = serverChannel.accept(); // позволяет вашему серверу принять новое входящее соединение и дает вам возможность взаимодействовать с клиентом, используя этот SocketChannel
+        System.out.println("Connection accepted from " + client);
+        client.configureBlocking(false); // неблокирующий режим
+        client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
+    }
+
+    private void handleRead(SelectionKey key) throws IOException, ClassNotFoundException {
+        SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
+        client.configureBlocking(false); // неблокирующий режим
+
+        ByteBuffer fromClientBuffer = (ByteBuffer) key.attachment();
+        client.read(fromClientBuffer);
+        try {
+
+            ObjectInputStream fromClient = new ObjectInputStream(new ByteArrayInputStream(fromClientBuffer.array()));
+
+            Request request = (Request) fromClient.readObject();
+            fromClientBuffer.clear();
+            System.out.println(request);
+
+            byte[] response = executor.processCommand(request.getCommand(), request.getArgs(), request.getRoute()).getBytes();
+            ByteBuffer responseBuffer = ByteBuffer.wrap(response);
+            client.register(key.selector(), SelectionKey.OP_WRITE, responseBuffer);
+        } catch (StreamCorruptedException e) {
+            System.out.println("Client disconnected");
+            key.cancel();
+        }
+    }
+
+    private void handleWrite(SelectionKey key) throws IOException {
+        SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
+        client.configureBlocking(false); // неблокирующий режим
+        ByteBuffer buffer = (ByteBuffer) key.attachment();
+        client.write(buffer);
+        client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
     }
 }

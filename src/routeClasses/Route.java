@@ -3,13 +3,18 @@ package routeClasses;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
  * Класс Route, объекты которого являются элементами коллекции.
  */
-public class Route implements Comparable<Route> {
+public class Route implements Comparable<Route>, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -18,7 +23,7 @@ public class Route implements Comparable<Route> {
     private LocationTo to; //Поле может быть null
     private double distance; //Поле не может быть null, Значение поля должно быть больше 1
 
-    private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss");
+    private transient DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss");
 
 
     /**
@@ -199,6 +204,21 @@ public class Route implements Comparable<Route> {
 
     public String toString() {
         return "Route [%s]".formatted(this.showValues());
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject(); // Write default fields
+
+    }
+
+    // Implement readObject method for custom deserialization
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject(); // Read default fields
+
+        // Read the pattern of the DateTimeFormatter
+        dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss");
     }
 
     /**

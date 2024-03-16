@@ -23,7 +23,7 @@ public class UpdateByIdCommand extends ReadRoute {
      *
      * @param commandParts массив, содержащий название аргументы команды
      */
-    public String execute(String[] commandParts, boolean parse) {
+    public String execute(String[] commandParts, Route route, boolean parse) {
         try {
             if (parse) {
                 InputValidator.checkIfTwoArguments(commandParts);

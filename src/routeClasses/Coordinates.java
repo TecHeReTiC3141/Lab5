@@ -1,9 +1,11 @@
 package routeClasses;
 
+import java.io.Serializable;
+
 /**
  * Класс, представляющий поле coordinates класса Route.
  */
-public class Coordinates {
+public class Coordinates implements Serializable {
 
     private long x;
     private long y;

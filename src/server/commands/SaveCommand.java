@@ -1,10 +1,9 @@
 package server.commands;
 
-import exceptions.WrongArgumentsException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import routeClasses.Route;
 import utils.CollectionManager;
-import utils.InputValidator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,10 +26,9 @@ public class SaveCommand extends BaseCommand {
      *
      * @param commandParts массив, содержащий название и аргументы команды
      */
-    public String execute(String[] commandParts) {
+    public String execute(String[] commandParts, Route route) {
 
         try {
-            InputValidator.checkIfNoArguments(commandParts);
             if (manager.getIsEmpty()) {
                 return "Коллекция пуста, нечего сохранять.";
             }
@@ -41,8 +39,6 @@ public class SaveCommand extends BaseCommand {
             document.appendChild(root);
             manager.addCollectionToRoot(document, root);
 
-        } catch (WrongArgumentsException e) {
-            System.err.println(e.getMessage());
         } catch (ParserConfigurationException e) {
             System.err.println("Ошибка при сохранение");
         }

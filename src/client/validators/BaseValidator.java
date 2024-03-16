@@ -11,12 +11,17 @@ import java.util.Set;
 
 public abstract class BaseValidator implements IValidator {
 
+    protected boolean needParse = false;
+
     public Request validate(String command, String[] args) {
         return new Request(command, args, null);
     }
 
     public Request validate(String command, String[] args, Route route) {
         return new Request(command, args, route);
+    }
+     public Request validate(String command, String[] args, boolean parse) {
+        return new Request(command, args, null);
     }
 
     /**
@@ -89,5 +94,9 @@ public abstract class BaseValidator implements IValidator {
         if (!answer.equals("yes") && !answer.equals("no")) {
             throw new IllegalArgumentException("Введите yes или no");
         }
+    }
+
+    public boolean getNeedParse() {
+        return needParse;
     }
 }

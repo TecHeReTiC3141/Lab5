@@ -1,5 +1,6 @@
 package server.commands;
 
+import routeClasses.Route;
 import utils.CollectionManager;
 
 /**
@@ -18,7 +19,7 @@ public class RemoveByIdCommand extends BaseCommand {
      * @param commandParts массив, содержащий название аргументы команды
      */
 
-    public String execute(String[] commandParts) {
+    public String execute(String[] commandParts, Route route) {
         long id = Long.parseLong(commandParts[1]);
         return manager.removeById(id);
     }

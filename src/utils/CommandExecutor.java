@@ -1,5 +1,6 @@
 package utils;
 
+import routeClasses.Route;
 import server.commands.*;
 
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class CommandExecutor {
      * @see BaseCommand#execute(String[])
      */
 
-    public String processCommand(String commandName, String[] args) {
+    public String processCommand(String commandName, String[] args, Route route) {
         if (depth > 1000) {
             depth = 0;
             return "Превышена максимальная глубина рекурсии, вероятно, из-за рекурсивного вызова execute_script, проверьте скрипт на вызов самого себя";
@@ -71,8 +72,8 @@ public class CommandExecutor {
 
         BaseCommand command = commands.get(commandName);
         if (command.getNeedsParse()) {
-            return command.execute(args, depth > 0);
+            return command.execute(args, route, depth > 0);
         }
-        return command.execute(args);
+        return command.execute(args, route);
     }
 }

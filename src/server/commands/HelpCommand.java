@@ -1,5 +1,6 @@
 package server.commands;
 
+import routeClasses.Route;
 import utils.CollectionManager;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class HelpCommand extends BaseCommand {
     /**
      * Main method.
      */
-    public String execute(String[] commandParts) {
+    public String execute(String[] commandParts, Route route) {
         StringBuilder result = new StringBuilder();
         result.append("Список доступных команд:");
         for (BaseCommand command : commands) {
