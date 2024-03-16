@@ -22,8 +22,13 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
+
+    private final int saveInterval = 30;
 
     /**
      * Обработчик команд
@@ -56,7 +61,7 @@ public class Server {
         Selector selector = Selector.open();
         channel.register(selector, SelectionKey.OP_ACCEPT);
         Map<SocketChannel, StringBuilder> clientDataMap = new HashMap<>();
-
+        startSavingTask(saveInterval);
 
         try {
             while (true) {
@@ -139,7 +144,15 @@ public class Server {
         } catch (ParserConfigurationException e) {
             System.err.println("Ошибка при сохранение");
         }
-        System.out.println("Коллекция успешно сохранена в файл.");
+    }
+
+    public void startSavingTask(int intervalInSeconds) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        Runnable saveTask = this::saveCollection;
+
+        // Schedule the save task to run every n seconds
+        scheduler.scheduleAtFixedRate(saveTask, 0, intervalInSeconds, TimeUnit.SECONDS);
     }
 }
 

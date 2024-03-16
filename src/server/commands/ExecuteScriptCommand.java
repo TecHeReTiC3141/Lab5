@@ -35,7 +35,7 @@ public class ExecuteScriptCommand extends BaseCommand {
     public String execute(String[] commandParts) {
         try {
             InputValidator.checkIfOneArgument(commandParts);
-            String filename = commandParts[1];
+            String filename = commandParts[0];
             try (FileReader reader = new FileReader(filename)) {
                 FileConsole console = new FileConsole(reader);
                 executor.setDepth(executor.getDepth() + 1);

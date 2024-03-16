@@ -21,7 +21,7 @@ public class RemoveAtCommand extends BaseCommand {
 
     public String execute(String[] commandParts, Route route) {
         try {
-            manager.removeElementAt(Integer.parseInt(commandParts[1]));
+            manager.removeElementAt(Integer.parseInt(commandParts[0]));
             return "Элемент успешно удален";
         } catch (ArrayIndexOutOfBoundsException e) {
             return "Элемента с таким индексом не существует. Проверьте, что это число больше 0 и меньше размера коллекции";
