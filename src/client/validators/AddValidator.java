@@ -8,7 +8,11 @@ public class AddValidator extends ReadValidator {
     @Override
     public Request validate(String command, String[] args, boolean parse) {
         try {
-            checkIfNoArguments(command, args);
+            if (parse) {
+                checkIfOneArgument(command, args);
+            } else {
+                checkIfNoArguments(command, args);
+            }
             return super.validate(command, args, parse);
         } catch (WrongArgumentsException e) {
             System.out.println(e.getMessage());

@@ -123,15 +123,16 @@ public class Client {
             return;
         }
         try {
-
             if (request.getCommand().equals("execute_script")) {
                 handleExecuteScript(request);
+            } else {
+                makeRequest(request);
             }
-            makeRequest(request);
         } catch (IOException e) {
             System.err.println("Ошибка при отправке запроса: " + e.getMessage());
         }
     }
+
     // TODO: fix recursion
     public void handleExecuteScript(Request request) {
         if (depth > 1000) {

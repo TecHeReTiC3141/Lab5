@@ -29,7 +29,7 @@ public class ReadValidator extends BaseValidator {
             } else {
                 checkIfNoArguments(command, args);
             }
-            Route route = parse ? parseRoute(args[1]) : readRoute();
+            Route route = parse ? parseRoute(args[args.length - 1]) : readRoute();
             return super.validate(command, args, route);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());

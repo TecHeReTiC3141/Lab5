@@ -7,7 +7,11 @@ public class UpdateByIdValidator extends ReadValidator {
     @Override
     public Request validate(String command, String[] args, boolean parse) {
         try {
-            checkIfOneArgument(command, args);
+            if (parse) {
+                checkIfTwoArguments(command, args);
+            } else {
+                checkIfOneArgument(command, args);
+            }
             Long id = Long.parseLong(args[0]);
             return super.validate(command, args, parse);
         } catch (WrongArgumentsException e) {

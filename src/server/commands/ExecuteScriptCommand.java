@@ -31,6 +31,7 @@ public class ExecuteScriptCommand extends BaseCommand {
 
     // TODO: refactor this method
     public String execute(String[] commandParts) {
+        System.out.println("in execute_script");
         String filename = commandParts[0];
         try (FileReader reader = new FileReader(filename)) {
             FileConsole console = new FileConsole(reader);

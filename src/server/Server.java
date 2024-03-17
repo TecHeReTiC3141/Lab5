@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StreamCorruptedException;
 import java.net.InetSocketAddress;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -73,19 +72,26 @@ public class Server {
 
                     SelectionKey key = iter.next();
                     iter.remove();
-                    if (key.isAcceptable()) {
-                        handleAccept(key);
-                    } else if (key.isReadable()) {
-                        System.out.println("Reading...");
-                        handleRead(key);
-                    } else if (key.isWritable()) {
-                        System.out.println("Writing...");
-                        handleWrite(key);
+                    try {
+
+                        if (key.isAcceptable()) {
+                            handleAccept(key);
+                        } else if (key.isReadable()) {
+                            System.out.println("Reading...");
+                            handleRead(key);
+                        } else if (key.isWritable()) {
+                            System.out.println("Writing...");
+                            handleWrite(key);
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Client disconnected");
+                        key.cancel();
                     }
                 }
             }
-        } catch (SocketException e) {
+        } catch (IOException e) {
             System.out.println("Client is disconnected");
+
         }
         saveCollection();
     }
