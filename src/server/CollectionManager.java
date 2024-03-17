@@ -252,6 +252,8 @@ public class CollectionManager {
     /**
      * Метод, выводящий элементы коллекции в порядке возрастания.
      */
+
+    // TODO: fix \n absence
     public String printAscendingCommand() {
         if (collection.isEmpty()) {
             return "Коллекция пуста";
@@ -270,8 +272,7 @@ public class CollectionManager {
         if (collection.isEmpty()) {
             return "Коллекция пуста";
         }
-        StringBuilder result = new StringBuilder();
-        result.append("Поля distance в порядке убывания:");
+        StringBuilder result = new StringBuilder("Поля distance в порядке убывания:\n");
         collection.stream().sorted(new RouteDistanceComparator()).forEach(r -> result.append("%s - %s%n".formatted(r.getId(), r.getDistance())));
         return result.toString();
     }

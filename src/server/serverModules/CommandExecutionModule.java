@@ -1,6 +1,7 @@
-package server;
+package server.serverModules;
 
 import common.routeClasses.Route;
+import server.CollectionManager;
 import server.commands.*;
 
 import java.util.ArrayList;
@@ -11,14 +12,14 @@ import java.util.Map;
  * Класс, запускающий команды, введенные пользователем
  */
 
-public class CommandExecutor {
+public class CommandExecutionModule {
 
     /**
      * Map, содержащий все команды, доступные пользователю
      */
     private final Map<String, BaseCommand> commands;
 
-    public CommandExecutor(CollectionManager manager) {
+    public CommandExecutionModule(CollectionManager manager) {
         commands = new HashMap<>() {
             {
                 put("info", new InfoCommand("info", "вывести информацию о коллекции", manager));
@@ -34,10 +35,9 @@ public class CommandExecutor {
                 put("print_ascending", new PrintAscendingCommand("print_ascending", "вывести элементы коллекции в естественном порядке возрастания", manager));
                 put("print_field_descending_distance", new PrintFieldDescendingDistanceCommand("print_field_descending_distance", "вывести значения поля distance в порядке убывания", manager));
                 put("exit", new ExitCommand("exit", "Выйти из программы (без сохранения коллекции в файл)", manager));
+                put("execute_script", new ExecuteScriptCommand("execute_script", "считать и исполнить скрипт из указанного файла", manager));
             }
         };
-        ExecuteScriptCommand executeScript = new ExecuteScriptCommand("execute_script", "считать и исполнить скрипт из указанного файла", manager);
-        commands.put("execute_script", executeScript);
         HelpCommand help = new HelpCommand("help", "вывести справку по доступным командам", manager);
         help.setCommands(new ArrayList<BaseCommand>(commands.values()));
         commands.put("help", help);

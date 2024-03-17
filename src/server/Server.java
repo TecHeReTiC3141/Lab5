@@ -1,19 +1,18 @@
 package server;
 
-import client.Request;
 import common.routeClasses.Route;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import server.serverModules.AcceptConnectionModule;
+import server.serverModules.CommandExecutionModule;
+import server.serverModules.RequestReadModule;
+import server.serverModules.SendResponseModule;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.StreamCorruptedException;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -30,20 +29,31 @@ public class Server {
     /**
      * Обработчик команд
      */
-    private final CommandExecutor executor;
+    private final CommandExecutionModule executor;
 
     /**
      * Менеджер коллекции
      */
     private final CollectionManager manager;
+
+    private final AcceptConnectionModule acceptConnectionModule;
+
+    private final RequestReadModule requestReadModule;
+
+    private final SendResponseModule sendResponseModule;
+
     private final int port = 1234;
+
 
     /**
      * Конструктор приложения
      */
     public Server() {
         this.manager = new CollectionManager(new Stack<Route>());
-        this.executor = new CommandExecutor(manager);
+        this.executor = new CommandExecutionModule(manager);
+        this.acceptConnectionModule = new AcceptConnectionModule();
+        this.requestReadModule = new RequestReadModule(executor);
+        this.sendResponseModule = new SendResponseModule();
     }
 
     // TODO: separate server into four sections: connectionHandler, requestHandler, responseHandler, and commandExecutor
@@ -73,13 +83,13 @@ public class Server {
                     try {
 
                         if (key.isAcceptable()) {
-                            handleAccept(key);
+                            acceptConnectionModule.handleAccept(key);
                         } else if (key.isReadable()) {
                             System.out.println("Reading...");
-                            handleRead(key);
+                            requestReadModule.handleRead(key);
                         } else if (key.isWritable()) {
                             System.out.println("Writing...");
-                            handleWrite(key);
+                            sendResponseModule.handleWrite(key);
                         }
                     } catch (IOException e) {
                         System.out.println("Client disconnected");
@@ -92,45 +102,6 @@ public class Server {
 
         }
         saveCollection();
-    }
-
-    private void handleAccept(SelectionKey key) throws IOException {
-        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel(); // используется для доступа к серверному каналу
-        SocketChannel client = serverChannel.accept(); // позволяет вашему серверу принять новое входящее соединение и дает вам возможность взаимодействовать с клиентом, используя этот SocketChannel
-        System.out.println("Connection accepted from " + client);
-        client.configureBlocking(false); // неблокирующий режим
-        client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
-    }
-
-    private void handleRead(SelectionKey key) throws IOException, ClassNotFoundException {
-        SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
-        client.configureBlocking(false); // неблокирующий режим
-
-        ByteBuffer fromClientBuffer = (ByteBuffer) key.attachment();
-        client.read(fromClientBuffer);
-        try {
-
-            ObjectInputStream fromClient = new ObjectInputStream(new ByteArrayInputStream(fromClientBuffer.array()));
-
-            Request request = (Request) fromClient.readObject();
-            fromClientBuffer.clear();
-            System.out.println(request);
-
-            byte[] response = executor.processCommand(request.getCommand(), request.getArgs(), request.getRoute()).getBytes();
-            ByteBuffer responseBuffer = ByteBuffer.wrap(response);
-            client.register(key.selector(), SelectionKey.OP_WRITE, responseBuffer);
-        } catch (StreamCorruptedException e) {
-            System.out.println("Client disconnected");
-            key.cancel();
-        }
-    }
-
-    private void handleWrite(SelectionKey key) throws IOException {
-        SocketChannel client = (SocketChannel) key.channel(); // получаем канал для работы
-        client.configureBlocking(false); // неблокирующий режим
-        ByteBuffer buffer = (ByteBuffer) key.attachment();
-        client.write(buffer);
-        client.register(key.selector(), SelectionKey.OP_READ, ByteBuffer.allocate(4096));
     }
 
     private void saveCollection() {
