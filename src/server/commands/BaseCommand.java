@@ -45,15 +45,6 @@ public abstract class BaseCommand implements ICommand {
     }
 
     /**
-     * Gets needs parse.
-     *
-     * @return the needs parse
-     */
-    public boolean getNeedsParse() {
-        return needsParse;
-    }
-
-    /**
      * Метод, в котором выполняется логика команды.
      *
      * @param commandParts массив, содержащий название и аргументы команды

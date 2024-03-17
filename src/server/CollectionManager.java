@@ -25,10 +25,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Класс, отвечающий за работу коллекции
@@ -42,7 +39,7 @@ public class CollectionManager {
     private final Date initDate = new Date();
 
     // TODO:  rewrite all methods to use Stream api
-    private final Stack<Route> collection;
+    private Stack<Route> collection;
 
     /**
      * Путь к файлу, в котором хранится коллекция и куда она сохраняется
@@ -183,50 +180,6 @@ public class CollectionManager {
         return collection.isEmpty();
     }
 
-
-    /**
-     * Метод, добавляющий route в коллекцию и устанавливающий id элемента при необходимости.
-     *
-     * @param route   элемент, который нужно добавить
-     * @param silence флаг, указывающий, нужно ли выводить сообщение о добавлении элемента
-     */
-
-    public String putToCollection(Route route, boolean silence) {
-        if (route.getId() == 0) {
-
-            if (collection.isEmpty()) {
-                route.setId(1);
-            } else {
-                long maxId = 0L;
-                for (Route item : collection) {
-                    maxId = Math.max(maxId, item.getId());
-                }
-                route.setId(maxId + 1);
-            }
-        }
-
-        collection.push(route);
-        if (!silence) return "Маршрут успешно добавлен в коллекцию";
-        return "Silently added";
-    }
-
-    /**
-     * Метод, очищающий коллекцию.
-     */
-    public void clearCollection() {
-        collection.clear();
-    }
-
-    /**
-     * Метод, возвращающий количество элементов коллекции, значение поля distance которых больше заданного.
-     *
-     * @param distance значение поля distance
-     * @return количество элементов коллекции, значение поля distance которых больше заданного
-     */
-    public long countGreaterThanDistance(double distance) {
-        return collection.stream().filter(route -> route.getDistance() > distance).count();
-    }
-
     /**
      * Метод, возвращающий название класса коллекции.
      *
@@ -257,6 +210,46 @@ public class CollectionManager {
     }
 
     /**
+     * Метод, добавляющий route в коллекцию и устанавливающий id элемента при необходимости.
+     *
+     * @param route   элемент, который нужно добавить
+     * @param silence флаг, указывающий, нужно ли выводить сообщение о добавлении элемента
+     */
+
+    public String putToCollection(Route route, boolean silence) {
+        if (route.getId() == 0) {
+            if (collection.isEmpty()) {
+                route.setId(1);
+            } else {
+                long maxId = collection.stream().mapToLong(Route::getId).max().orElse(0) + 1;
+                route.setId(maxId);
+            }
+        }
+
+        collection.push(route);
+        if (!silence) return "Маршрут успешно добавлен в коллекцию";
+        return "Silently added";
+    }
+
+    /**
+     * Метод, очищающий коллекцию.
+     */
+    public void clearCollection() {
+        collection.clear();
+    }
+
+    /**
+     * Метод, возвращающий количество элементов коллекции, значение поля distance которых больше заданного.
+     *
+     * @param distance значение поля distance
+     * @return количество элементов коллекции, значение поля distance которых больше заданного
+     */
+    public long countGreaterThanDistance(double distance) {
+        return collection.stream().filter(route -> route.getDistance() > distance).count();
+    }
+
+
+    /**
      * Метод, выводящий элементы коллекции в порядке возрастания.
      */
     public String printAscendingCommand() {
@@ -266,7 +259,7 @@ public class CollectionManager {
         StringBuilder result = new StringBuilder();
         collection.stream()
                 .sorted()
-                .forEach(result::append);
+                .forEach(r -> result.append(r.toString()).append('\n'));
         return result.toString();
     }
 
@@ -318,14 +311,7 @@ public class CollectionManager {
      * Метод, меняющий порядок элементов коллекции на обратный.
      */
     public void reorder() {
-        Stack<Route> temp = new Stack<>();
-        while (!collection.isEmpty()) {
-            temp.push(collection.pop());
-        }
-
-        for (Route route : temp) {
-            collection.push(route);
-        }
+        Collections.reverse(collection);
     }
 
     /**
@@ -402,11 +388,8 @@ public class CollectionManager {
         if (collection.isEmpty()) {
             return "Коллекция пуста";
         }
-        StringBuilder result = new StringBuilder();
-        result.append("Содержимое коллекции: \n");
-        for (Route route : collection) {
-            result.append(route.toString()).append('\n');
-        }
+        StringBuilder result = new StringBuilder("Содержимое коллекции: \n");
+        collection.stream().forEach(r -> result.append(r.toString()).append('\n'));
         return result.toString();
     }
 
@@ -414,12 +397,7 @@ public class CollectionManager {
      * Метод, сортирующий коллекцию в естественном порядке.
      */
     public void sortCollection() {
-        ArrayList<Route> routes = new ArrayList<>(collection);
-        routes.sort(Route::compareTo);
-        collection.clear();
-        for (Route route : routes) {
-            collection.push(route);
-        }
+        this.collection = collection.stream().sorted().collect(Stack::new, Stack::push, Stack::addAll);
     }
 
     /**
@@ -430,12 +408,7 @@ public class CollectionManager {
      */
 
     public boolean findElementById(long id) {
-        for (Route route : collection) {
-            if (route.getId() == id) {
-                return true;
-            }
-        }
-        return false;
+        return collection.stream().anyMatch(r -> r.getId() == id);
     }
 
 

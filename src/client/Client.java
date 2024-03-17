@@ -69,9 +69,8 @@ public class Client {
 
             System.out.println("Приветствую вас в программе для работы с коллекцией Route! Введите help для получения списка команд");
             while (true) {
-                Request request = lineToRequest(sc.getLine());
-
                 try {
+                    Request request = lineToRequest(sc.getLine());
                     handleRequest(request);
                 } catch (ExitException e) {
                     System.out.println("Выход из программы...");
