@@ -1,4 +1,4 @@
-package routeClasses;
+package common.routeClasses;
 
 import java.util.Comparator;
 

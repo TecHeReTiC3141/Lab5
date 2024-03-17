@@ -1,10 +1,10 @@
 package client;
 
+import client.consoles.FileConsole;
+import client.consoles.SystemInConsole;
 import client.validators.*;
-import exceptions.ExitException;
-import exceptions.UnknownCommandException;
-import utils.FileConsole;
-import utils.SystemInConsole;
+import common.exceptions.ExitException;
+import common.exceptions.UnknownCommandException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
@@ -46,13 +46,10 @@ public class Client {
     }
 
     public void openSocket() throws IOException {
-        // Open the socket channel
         socketChannel = SocketChannel.open();
-        // You can set additional options, configure, etc. here if needed
     }
 
     public void closeSocket() throws IOException {
-        // Close the socket channel
         if (socketChannel != null && socketChannel.isOpen()) {
             socketChannel.close();
         }

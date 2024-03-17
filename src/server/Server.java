@@ -1,11 +1,9 @@
 package server;
 
 import client.Request;
+import common.routeClasses.Route;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import routeClasses.Route;
-import utils.CollectionManager;
-import utils.CommandExecutor;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

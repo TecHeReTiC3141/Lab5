@@ -1,4 +1,4 @@
-package routeClasses;
+package common.routeClasses;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -1,7 +1,7 @@
 package server.commands;
 
 
-import routeClasses.Route;
+import common.routeClasses.Route;
 
 /**
  * Интерфейс, содержащий методы, обязательные для реализации во всех классах-командах.

@@ -1,4 +1,4 @@
-package utils;
+package client.consoles;
 
 /**
  * Консоль, отвечающая за чтение команд пользователя из файла.

@@ -1,12 +1,12 @@
 package client.validators;
 
 import client.Request;
-import exceptions.*;
-import routeClasses.Coordinates;
-import routeClasses.LocationFrom;
-import routeClasses.LocationTo;
-import routeClasses.Route;
-import utils.InputValidator;
+import common.RouteDataValidator;
+import common.exceptions.*;
+import common.routeClasses.Coordinates;
+import common.routeClasses.LocationFrom;
+import common.routeClasses.LocationTo;
+import common.routeClasses.Route;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,11 +24,6 @@ public class ReadValidator extends BaseValidator {
     @Override
     public Request validate(String command, String[] args, boolean parse){
         try {
-            if (parse) {
-                checkIfOneArgument(command, args);
-            } else {
-                checkIfNoArguments(command, args);
-            }
             Route route = parse ? parseRoute(args[args.length - 1]) : readRoute();
             return super.validate(command, args, route);
         } catch (ValidationException e) {
@@ -59,7 +54,7 @@ public class ReadValidator extends BaseValidator {
             try {
                 System.out.println("Введите name - не пустую строку: ");
                 String line = scanner.nextLine();
-                route.setName(InputValidator.checkName(line));
+                route.setName(RouteDataValidator.checkName(line));
                 break;
             } catch (InvalidNameException e) {
                 System.err.println("Поле name должно быть непустой строкой");
@@ -72,7 +67,7 @@ public class ReadValidator extends BaseValidator {
             try {
                 System.out.println("Введите distance - вещественное число > 1: ");
                 String line = scanner.nextLine();
-                route.setDistance(InputValidator.checkDistance(line));
+                route.setDistance(RouteDataValidator.checkDistance(line));
                 break;
             } catch (InvalidDistanceException e) {
                 System.err.println("Поле distance должно быть вещественным числом больше 1");
@@ -163,7 +158,7 @@ public class ReadValidator extends BaseValidator {
         while (true) {
             try {
                 String line = scanner.nextLine().trim().toLowerCase();
-                InputValidator.checkIfYesOrNo(line);
+                RouteDataValidator.checkIfYesOrNo(line);
                 hasFrom = line.equals("yes");
                 break;
             } catch (IllegalArgumentException e) {
@@ -261,11 +256,11 @@ public class ReadValidator extends BaseValidator {
                     route.setId(Long.parseLong(value));
                     break;
                 case "name":
-                    InputValidator.checkName(value);
+                    RouteDataValidator.checkName(value);
                     route.setName(value);
                     break;
                 case "distance":
-                    route.setDistance(InputValidator.checkDistance(value));
+                    route.setDistance(RouteDataValidator.checkDistance(value));
                     break;
                 case "coordinatesX":
                     coordinates.setX(Long.parseLong(value));

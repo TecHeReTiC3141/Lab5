@@ -1,4 +1,4 @@
-package utils;
+package client.consoles;
 
 import java.io.InputStream;
 import java.util.Scanner;

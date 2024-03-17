@@ -1,11 +1,11 @@
 package client.validators;
 
 import client.Request;
-import exceptions.InvalidDistanceException;
-import exceptions.InvalidNameException;
-import exceptions.UnknownCommandException;
-import exceptions.WrongArgumentsException;
-import routeClasses.Route;
+import common.exceptions.InvalidDistanceException;
+import common.exceptions.InvalidNameException;
+import common.exceptions.UnknownCommandException;
+import common.exceptions.WrongArgumentsException;
+import common.routeClasses.Route;
 
 import java.util.Set;
 

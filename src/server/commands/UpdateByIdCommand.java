@@ -1,13 +1,13 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Класс, объекты которого обновляют элемент коллекции по его id, заменяя его другим элементом.
  */
 
-public class UpdateByIdCommand extends ReadRoute {
+public class UpdateByIdCommand extends BaseCommand {
 
     public UpdateByIdCommand(String name, String description, CollectionManager manager) {
         super(name, description, manager);

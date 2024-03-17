@@ -1,7 +1,7 @@
 package client.validators;
 
 import client.Request;
-import exceptions.WrongArgumentsException;
+import common.exceptions.WrongArgumentsException;
 
 public class NoArgumentsValidator extends BaseValidator {
 

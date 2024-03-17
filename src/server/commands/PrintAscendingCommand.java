@@ -1,7 +1,7 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Класс, реализующий команду print_ascending, которая выводит элементы коллекции, отсортированные в естественном порядке.
@@ -9,7 +9,7 @@ import utils.CollectionManager;
 public class PrintAscendingCommand extends BaseCommand {
 
     public PrintAscendingCommand(String name, String description, CollectionManager manager) {
-        super(name, description, manager, false);
+        super(name, description, manager);
     }
 
     /**

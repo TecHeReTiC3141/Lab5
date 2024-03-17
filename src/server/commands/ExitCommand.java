@@ -1,8 +1,7 @@
 package server.commands;
 
-import exceptions.ExitException;
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Класс команды exit, завершающей программу.
@@ -19,7 +18,7 @@ public class ExitCommand extends BaseCommand {
      * @param manager   менеджер коллекции
      */
     public ExitCommand(String name, String description, CollectionManager manager) {
-        super(name, description, manager, false);
+        super(name, description, manager);
     }
 
     /**
@@ -27,7 +26,8 @@ public class ExitCommand extends BaseCommand {
      * @param commandParts название команды и ее аргументы
      */
     public String execute(String[] commandParts, Route route) {
-        throw new ExitException();
+
+        return "Client exited";
     }
 
 }

@@ -1,7 +1,7 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Класс, реализующий команду count_greater_than_distance, которая выводит количество элементов со значением поля distance больше заданного.
@@ -9,7 +9,7 @@ import utils.CollectionManager;
 public class CountGreaterThanDistanceCommand extends BaseCommand {
 
     public CountGreaterThanDistanceCommand(String name, String description, CollectionManager manager) {
-        super(name, description, manager, false);
+        super(name, description, manager);
     }
 
     /**

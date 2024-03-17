@@ -1,13 +1,14 @@
-package utils;
+package server;
 
-import exceptions.AbsentRequiredParametersException;
-import exceptions.InvalidDistanceException;
-import exceptions.InvalidNameException;
-import exceptions.WrongArgumentsException;
+import common.RouteDataValidator;
+import common.exceptions.AbsentRequiredParametersException;
+import common.exceptions.InvalidDistanceException;
+import common.exceptions.InvalidNameException;
+import common.exceptions.WrongArgumentsException;
+import common.routeClasses.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import routeClasses.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -84,7 +85,7 @@ public class CollectionManager {
                     route.setId(Long.parseLong(attributes.getNamedItem("value").getNodeValue()));
                     break;
                 case "name":
-                    route.setName(InputValidator.checkName(attributes.getNamedItem("value").getNodeValue()));
+                    route.setName(RouteDataValidator.checkName(attributes.getNamedItem("value").getNodeValue()));
                     break;
                 case "coordinates":
                     route.setCoordinates(new Coordinates(
@@ -124,7 +125,7 @@ public class CollectionManager {
                             nameNode != null ? nameNode.getNodeValue() : "null"));
                     break;
                 case "distance":
-                    route.setDistance(InputValidator.checkDistance(attributes.getNamedItem("value").getNodeValue()));
+                    route.setDistance(RouteDataValidator.checkDistance(attributes.getNamedItem("value").getNodeValue()));
                     break;
                 default:
                     throw new WrongArgumentsException("Лишнее поле: " + child.getNodeName());

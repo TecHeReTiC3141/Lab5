@@ -1,7 +1,7 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Класс, реализующий команду show, которая выводит содержимое коллекции.
@@ -10,7 +10,7 @@ import utils.CollectionManager;
 public class ShowCommand extends BaseCommand {
 
     public ShowCommand(String name, String description, CollectionManager manager) {
-        super(name, description, manager, false);
+        super(name, description, manager);
     }
 
     /**

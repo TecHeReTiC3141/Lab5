@@ -1,6 +1,6 @@
 package client;
 
-import routeClasses.Route;
+import common.routeClasses.Route;
 
 import java.io.Serializable;
 import java.util.Arrays;

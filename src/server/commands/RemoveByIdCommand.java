@@ -1,7 +1,7 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Класс, предназначенный для удаления элемента коллекции по его id.
@@ -10,7 +10,7 @@ import utils.CollectionManager;
 public class RemoveByIdCommand extends BaseCommand {
 
     public RemoveByIdCommand(String name, String description, CollectionManager manager) {
-        super(name, description, manager, false);
+        super(name, description, manager);
     }
 
     /**

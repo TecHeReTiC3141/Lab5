@@ -1,7 +1,7 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Класс, реализующий команду info, выводящую информацию о коллекции (тип, дата инициализации, количество элементов).
@@ -11,7 +11,7 @@ public class InfoCommand extends BaseCommand {
 
 
     public InfoCommand(String name, String description, CollectionManager manager) {
-        super(name, description, manager, false);
+        super(name, description, manager);
     }
 
     /**

@@ -1,7 +1,7 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Абстрактный класс, реализующий интерфейс ICommand.
@@ -22,11 +22,6 @@ public abstract class BaseCommand implements ICommand {
      */
     protected CollectionManager manager;
 
-    /**
-     * The Needs parse.
-     */
-    protected final boolean needsParse;
-
 
     /**
      * Конструктор класса.
@@ -34,12 +29,10 @@ public abstract class BaseCommand implements ICommand {
      * @param name        название команды
      * @param description описание команды
      * @param manager   менеджер коллекции
-     * @param needsParse  флаг, указывающий, нужно ли парсить аргументы команды
      */
-    public BaseCommand(String name, String description, CollectionManager manager, boolean needsParse) {
+    public BaseCommand(String name, String description, CollectionManager manager) {
         this.name = name;
         this.description = description;
-        this.needsParse = needsParse;
         this.manager = manager;
     }
 

@@ -1,6 +1,6 @@
-package utils;
+package server;
 
-import routeClasses.Route;
+import common.routeClasses.Route;
 import server.commands.*;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class CommandExecutor {
                 put("exit", new ExitCommand("exit", "Выйти из программы (без сохранения коллекции в файл)", manager));
             }
         };
-        ExecuteScriptCommand executeScript = new ExecuteScriptCommand("execute_script", "считать и исполнить скрипт из указанного файла", manager, this);
+        ExecuteScriptCommand executeScript = new ExecuteScriptCommand("execute_script", "считать и исполнить скрипт из указанного файла", manager);
         commands.put("execute_script", executeScript);
         HelpCommand help = new HelpCommand("help", "вывести справку по доступным командам", manager);
         help.setCommands(new ArrayList<BaseCommand>(commands.values()));

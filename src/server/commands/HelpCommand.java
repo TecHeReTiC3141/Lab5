@@ -1,7 +1,7 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ public class HelpCommand extends BaseCommand {
     ArrayList<BaseCommand> commands = new ArrayList<>();
 
     public HelpCommand(String name, String description, CollectionManager manager) {
-        super(name, description, manager, false);
+        super(name, description, manager);
     }
 
     public void setCommands(ArrayList<BaseCommand> commands) {

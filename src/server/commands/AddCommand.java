@@ -1,13 +1,13 @@
 package server.commands;
 
-import routeClasses.Route;
-import utils.CollectionManager;
+import common.routeClasses.Route;
+import server.CollectionManager;
 
 /**
  * Класс, предоставляющий метод для добавления элемента в коллекцию.
  * Элемент может быть как добавлен пользователем вручную, так и считан из файла или из строки скрипта.
  */
-public class AddCommand extends ReadRoute {
+public class AddCommand extends BaseCommand {
 
 
     public AddCommand(String name, String description, CollectionManager manager) {

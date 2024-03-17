@@ -1,4 +1,4 @@
-package exceptions;
+package common.exceptions;
 
 /**
  * Исключение, выбрасываемое при выходе из программы
